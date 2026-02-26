@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navy English Tutor — خطوة بخطوة</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --card:#ffffff;
+      --border:#e2e8f0;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      --navy:#0b2a5b;
+      --blue:#1d4ed8;
+      --blue2:#2563eb;
+      --soft:#f5f8ff;
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --warn:#f59e0b;
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Top bar */
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .top{
+      max-width:1100px;
+      margin:auto;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:38px; height:38px;
+      border-radius:12px;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      box-shadow: 0 10px 20px rgba(29,78,216,.25);
+      display:grid; place-items:center;
+      color:#fff;
+      font-weight:900;
+      user-select:none;
+    }
+    .sub{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:700;
+      margin-top:2px;
+    }
+    .right-top{
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      font-size:12px;
+      color: var(--navy);
+      background: var(--soft);
+      border:1px solid #dbeafe;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:800;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid var(--border);
+      color: var(--navy);
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.18s;
+    }
+    .ghost:hover{ transform: translateY(-1px); box-shadow: var(--shadow); }
+
+    /* Tabs */
+    .tabsWrap{
+      max-width:1100px;
+      margin:0 auto 8px;
+      padding:0 16px 14px;
+      display:none; /* hidden until onboarding done */
+    }
+    .tabs{
+      background: var(--navy);
+      border-radius: 16px;
+      padding:8px;
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      box-shadow: 0 12px 28px rgba(11,42,91,.18);
+    }
+    .tab{
+      border:0;
+      padding:10px 12px;
+      border-radius:12px;
+      background: transparent;
+      color: rgba(255,255,255,.85);
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:.18s;
+    }
+    .tab:hover{ background: rgba(255,255,255,.10); }
+    .tab.active{
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(37,99,235,.35);
+    }
+
+    /* Layout */
+    main{
+      max-width:1100px;
+      margin:auto;
+      padding:18px 16px 60px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Card */
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .cardTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .cardTitle h2, .cardTitle h3{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      color: var(--navy);
+    }
+    .muted{ color: var(--muted); font-weight:700; font-size:13px; line-height:1.6; }
+    .hr{ height:1px; background: var(--border); margin:12px 0; }
+
+    /* Buttons */
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color:#fff;
+      transition:.18s;
+      box-shadow: 0 12px 22px rgba(37,99,235,.22);
+    }
+    .btn:hover{ transform: translateY(-1px); opacity:.95; }
+    .btn.secondary{
+      background:#fff;
+      border:1px solid var(--border);
+      color: var(--navy);
+      box-shadow:none;
+    }
+    .btn.secondary:hover{ box-shadow: var(--shadow); }
+
+    /* Inputs */
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+      font-weight:800;
+      color: var(--text);
+      background:#fff;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:900;
+      color: var(--navy);
+      margin:10px 0 6px;
+    }
+
+    /* Views + animation */
+    .view{ display:none; }
+    .view.active{
+      display:block;
+      animation: slideFade .35s ease;
+    }
+    @keyframes slideFade{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* Stepper */
+    .stepper{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin:10px 0 0;
+    }
+    .stepDot{
+      flex:1;
+      min-width:90px;
+      height:10px;
+      border-radius:999px;
+      background:#e5e7eb;
+      overflow:hidden;
+      position:relative;
+    }
+    .stepDot > span{
+      display:block;
+      height:100%;
+      width:0%;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      transition: width .35s ease;
+    }
+
+    /* Question options */
+    .option{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+      cursor:pointer;
+      transition:.15s;
+      background:#fff;
+      font-weight:900;
+      color: var(--text);
+    }
+    .option:hover{
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+      border-color:#c7d2fe;
+    }
+    .option small{ display:block; color:var(--muted); font-weight:800; margin-top:6px; }
+    .option.correct{ border-color:#86efac; background:#f0fdf4; }
+    .option.wrong{ border-color:#fecaca; background:#fef2f2; }
+
+    /* Progress bar */
+    .bar{
+      width:100%;
+      height:12px;
+      background:#e5e7eb;
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(135deg, var(--ok), #22c55e);
+      transition: width .45s ease;
+    }
+
+    /* English snippets */
+    .en{
+      direction:ltr;
+      unicode-bidi: plaintext;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:12px; font-weight:900;
+      color: var(--navy);
+    }
+
+    /* Tiny list */
+    ul.clean{
+      margin:10px 0 0; padding:0 18px;
+      color: var(--text);
+      font-weight:800;
+      line-height:1.7;
+    }
+
+    /* Session step */
+    .sessionStep{
+      border:1px dashed #cbd5e1;
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:14px;
+      left:14px;
+      right:14px;
+      max-width:1100px;
+      margin:auto;
+      display:none;
+      z-index:50;
+    }
+    .toast .card{
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+    }
+    .toastMsg{
+      font-weight:900;
+      color: var(--navy);
+    }
+    .toast.show{ display:block; animation: slideFade .25s ease; }
+
+    /* Footer note */
+    .note{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:800;
+      margin-top:10px;
+      line-height:1.6;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="top">
+    <div>
+      <div class="brand">
+        <div class="logo">EN</div>
+        <div>
+          <div>Navy English Tutor</div>
+          <div class="sub">تحديد مستوى → هدف → خطة → تعلّم خطوة بخطوة</div>
+        </div>
+      </div>
+    </div>
+    <div class="right-top">
+      <span class="pill" id="pillStatus">غير مُعد</span>
+      <button class="ghost" id="btnReset" title="إعادة ضبط كل شيء">إعادة ضبط</button>
+    </div>
+  </div>
+
+  <div class="tabsWrap" id="tabsWrap">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="today">جلسة اليوم</button>
+      <button class="tab" data-tab="plan">الخطة</button>
+      <button class="tab" data-tab="learn">التعلّم</button>
+      <button class="tab" data-tab="practice">التدريب</button>
+      <button class="tab" data-tab="progress">التقدّم</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ONBOARDING (Step by Step) -->
+  <section class="view active" id="viewOnboarding">
+
+    <div class="card">
+      <div class="cardTitle">
+        <h2>👋 خلّينا نبدأ خطوة بخطوة</h2>
+        <span class="badge" id="stepLabel">الخطوة 1/4</span>
+      </div>
+      <div class="muted">راح نسألك أسئلة بسيطة، نحدد مستواك (CEFR) + هدفك + وقتك اليومي، وبعدها نعمل خطة ونبدأ الدرس مباشرة.</div>
+
+      <div class="stepper" aria-label="progress">
+        <div class="stepDot"><span id="dot1"></span></div>
+        <div class="stepDot"><span id="dot2"></span></div>
+        <div class="stepDot"><span id="dot3"></span></div>
+        <div class="stepDot"><span id="dot4"></span></div>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- Step 1 -->
+      <div id="step1" class="view active">
+        <label>اسمك (اختياري)</label>
+        <input id="inpName" placeholder="مثال: أحمد" />
+
+        <label>كم دقيقة تقدر تدرس يوميًا؟</label>
+        <select id="inpMinutes">
+          <option value="15">15 دقيقة</option>
+          <option value="25">25 دقيقة</option>
+          <option value="30" selected>30 دقيقة</option>
+          <option value="45">45 دقيقة</option>
+          <option value="60">60 دقيقة</option>
+        </select>
+
+        <div class="note">✨ الخطة بتتغير حسب وقتك: كل ما زاد الوقت، بنزيد محادثة وتطبيق عملي.</div>
+
+        <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-start;">
+          <button class="btn" id="goStep2">التالي →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" class="view">
+        <label>هدفك الأساسي من تعلّم الإنجليزية</label>
+        <select id="inpGoal">
+          <option value="conversation">محادثة يومية</option>
+          <option value="travel">السفر</option>
+          <option value="job">العمل / مقابلات</option>
+          <option value="study">الدراسة</option>
+          <option value="exam">اختبار (IELTS/TOEFL) - مبادئ</option>
+        </select>
+
+        <label>وش أكثر شي يزعجك حاليًا؟</label>
+        <select id="inpPain">
+          <option value="speaking">التحدث (أخاف أغلط)</option>
+          <option value="listening">الاستماع (ما بلحق)</option>
+          <option value="grammar">القواعد (تلخبطني)</option>
+          <option value="vocab">المفردات (أنسى بسرعة)</option>
+        </select>
+
+        <div style="display:flex; gap:10px; margin-top:12px;">
+          <button class="btn secondary" id="back1">← رجوع</button>
+          <button class="btn" id="goStep3">ابدأ اختبار المستوى →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 (Placement Test) -->
+      <div id="step3" class="view">
+        <div class="muted">اختبار سريع (12 سؤال). اختار الإجابة الأفضل ✅</div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none;">
+          <div class="cardTitle">
+            <h3 id="qTitle">السؤال</h3>
+            <span class="badge" id="qCount">1/12</span>
+          </div>
+          <div class="muted" id="qHint"></div>
+
+          <div class="hr"></div>
+
+          <div id="qOptions"></div>
+
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="btn secondary" id="qPrev">← السابق</button>
+            <button class="btn" id="qNext">التالي →</button>
+          </div>
+
+          <div class="note">💡 نصيحة: لا تتوتر. الفكرة نعرف المستوى الحقيقي عشان الخطة تكون مناسبة.</div>
+        </div>
+      </div>
+
+      <!-- Step 4 (Result) -->
+      <div id="step4" class="view">
+        <div class="cardTitle">
+          <h2>📌 نتيجتك + خطة جاهزة</h2>
+          <span class="badge" id="levelBadge">A1</span>
+        </div>
+
+        <div class="muted" id="resultText"></div>
+
+        <div class="hr"></div>
+
+        <div class="grid">
+          <div class="card" style="box-shadow:none;">
+            <div class="cardTitle">
+              <h3>🗺️ خطتك (4 أسابيع)</h3>
+              <span class="badge" id="planBadge">30 دقيقة/يوم</span>
+            </div>
+            <div id="planBox"></div>
+          </div>
+
+          <div class="card" style="box-shadow:none;">
+            <div class="cardTitle">
+              <h3>🎯 تركيزك اليومي</h3>
+              <span class="badge" id="focusBadge">Balanced</span>
+            </div>
+
+            <div class="muted" style="margin-bottom:10px;">توزيع وقتك اليومي:</div>
+
+            <div style="display:grid; gap:10px;">
+              <div>
+                <div class="muted" style="display:flex; justify-content:space-between;">
+                  <span>مفردات</span><span id="pVocab">0%</span>
+                </div>
+                <div class="bar"><div id="barVocab"></div></div>
+              </div>
+              <div>
+                <div class="muted" style="display:flex; justify-content:space-between;">
+                  <span>قواعد</span><span id="pGrammar">0%</span>
+                </div>
+                <div class="bar"><div id="barGrammar"></div></div>
+              </div>
+              <div>
+                <div class="muted" style="display:flex; justify-content:space-between;">
+                  <span>استماع/نطق</span><span id="pListen">0%</span>
+                </div>
+                <div class="bar"><div id="barListen"></div></div>
+              </div>
+              <div>
+                <div class="muted" style="display:flex; justify-content:space-between;">
+                  <span>محادثة/تطبيق</span><span id="pSpeak">0%</span>
+                </div>
+                <div class="bar"><div id="barSpeak"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:12px;">
+          <button class="btn secondary" id="backToTest">← تعديل الاختبار</button>
+          <button class="btn" id="finishOnboarding">ابدأ التعلّم الآن 🚀</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="view" id="viewDashboard">
+    <div class="grid">
+
+      <!-- Main pane -->
+      <div class="card">
+        <div class="cardTitle">
+          <h2 id="dashTitle">جلسة اليوم</h2>
+          <span class="badge" id="dashMeta">—</span>
+        </div>
+
+        <!-- Today session -->
+        <div id="tab_today" class="tabView">
+          <div class="muted">جلسة خطوة-بخطوة: ما بتنتقل للخطوة اللي بعدها إلا لما تخلص اللي قبلها ✅</div>
+          <div class="hr"></div>
+
+          <div class="sessionStep" id="sessionBox"></div>
+
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="btn secondary" id="sessionBack">← رجوع</button>
+            <button class="btn" id="sessionNext">التالي →</button>
+          </div>
+
+          <div class="note">🔊 زر “استمع” يستخدم Text-to-Speech في المتصفح. إذا ما اشتغل، جرّبه على Chrome/Edge.</div>
+        </div>
+
+        <!-- Plan -->
+        <div id="tab_plan" class="tabView" style="display:none;">
+          <div class="muted">هذه خطتك حسب مستواك وهدفك. تقدر تمشي أسبوع أسبوع.</div>
+          <div class="hr"></div>
+          <div id="planFull"></div>
+        </div>
+
+        <!-- Learn -->
+        <div id="tab_learn" class="tabView" style="display:none;">
+          <div class="muted">دروس مفصلة: مفردات + قواعد + مثال + ملاحظاتك.</div>
+          <div class="hr"></div>
+
+          <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="card" style="box-shadow:none;">
+              <div class="cardTitle">
+                <h3>📌 درس اليوم (قواعد)</h3>
+                <span class="badge" id="grammarTag">Grammar</span>
+              </div>
+              <div id="grammarLesson"></div>
+              <label>ملاحظاتك</label>
+              <textarea id="notesArea" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+              <button class="btn secondary" id="saveNotes">حفظ الملاحظات</button>
+            </div>
+
+            <div class="card" style="box-shadow:none;">
+              <div class="cardTitle">
+                <h3>🧠 بطاقة مفردات</h3>
+                <span class="badge" id="vocabTag">SRS</span>
+              </div>
+              <div id="flashcard"></div>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn secondary" id="btnSpeakWord">🔊 استمع</button>
+                <button class="btn" id="btnKnown">عرفتها ✅</button>
+                <button class="btn secondary" id="btnHard">صعبة 🤯</button>
+              </div>
+              <div class="note">📌 “عرفتها” يبعدها للمراجعة لاحقًا، “صعبة” يرجعها قريب.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Practice -->
+        <div id="tab_practice" class="tabView" style="display:none;">
+          <div class="muted">تمارين تطبيقية (اختيار + فراغات) مع تصحيح فوري.</div>
+          <div class="hr"></div>
+
+          <div class="card" style="box-shadow:none;">
+            <div class="cardTitle">
+              <h3>🧩 تمرين سريع</h3>
+              <span class="badge" id="practiceCount">1/8</span>
+            </div>
+            <div id="practiceBox"></div>
+            <div style="display:flex; gap:10px; margin-top:12px;">
+              <button class="btn secondary" id="pracPrev">← السابق</button>
+              <button class="btn" id="pracNext">التالي →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div id="tab_progress" class="tabView" style="display:none;">
+          <div class="muted">تقدّمك محفوظ تلقائيًا على نفس المتصفح ✅</div>
+          <div class="hr"></div>
+
+          <div class="grid" style="grid-template-columns:1fr 1fr;">
+            <div class="card" style="box-shadow:none;">
+              <div class="cardTitle"><h3>📈 ملخص</h3><span class="badge" id="streakBadge">Streak</span></div>
+              <div id="progressSummary"></div>
+            </div>
+            <div class="card" style="box-shadow:none;">
+              <div class="cardTitle"><h3>📚 كلمات للمراجعة</h3><span class="badge" id="dueBadge">Due</span></div>
+              <div id="dueWords"></div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <button class="btn secondary" id="btnExport">تصدير بياناتي (JSON)</button>
+          <div class="note" id="exportBox"></div>
+        </div>
+      </div>
+
+      <!-- Side pane -->
+      <aside class="card">
+        <div class="cardTitle">
+          <h3>👤 ملفك</h3>
+          <span class="badge" id="profileBadge">—</span>
+        </div>
+
+        <div class="muted" id="profileBox"></div>
+
+        <div class="hr"></div>
+
+        <div class="cardTitle">
+          <h3>✅ تقدم اليوم</h3>
+          <span class="badge" id="todayBadge">0%</span>
+        </div>
+        <div class="bar"><div id="todayBar"></div></div>
+
+        <div class="hr"></div>
+
+        <div class="cardTitle">
+          <h3>⚡ اختصارات</h3>
+          <span class="badge">Quick</span>
+        </div>
+
+        <div style="display:grid; gap:10px;">
+          <button class="btn" id="jumpToday">ابدأ جلسة اليوم</button>
+          <button class="btn secondary" id="jumpVocab">مراجعة مفردات الآن</button>
+          <button class="btn secondary" id="jumpPractice">تمرين سريع الآن</button>
+        </div>
+
+        <div class="note">💙 التصميم خلفية بيضاء + تبويبات كحلي زي ما طلبت.</div>
+      </aside>
+
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast">
+  <div class="card">
+    <div class="toastMsg" id="toastMsg">تم ✅</div>
+    <button class="btn secondary" onclick="hideToast()">حسنًا</button>
+  </div>
+</div>
+
+<script>
+/* -----------------------------
+   Simple "AI-like" Tutor App
+   (Single-file, no libraries)
+-------------------------------- */
+
+const LS_KEY = "navy_english_tutor_v1";
+
+const state = {
+  onboardingStep: 1,
+  profile: {
+    name: "",
+    minutes: 30,
+    goal: "conversation",
+    pain: "speaking",
+    level: null, // A1/A2/B1/B2
+    score: 0
+  },
+  placement: {
+    index: 0,
+    answers: Array(12).fill(null)
+  },
+  progress: {
+    points: 0,
+    streak: 0,
+    lastDay: null,
+    todayPercent: 0,
+    sessionStep: 0,
+    practiceIndex: 0,
+    practiceAnswers: {}
+  },
+  notes: {
+    grammar: ""
+  },
+  srs: {
+    words: [] // {id, word, meaning, example, box, nextReviewTs}
+  }
+};
+
+const intervalsDays = [0, 1, 3, 7, 14, 30]; // box 0..5
+
+/* -----------------------------
+   Content (Detailed)
+-------------------------------- */
+const GOALS_AR = {
+  conversation: "محادثة يومية",
+  travel: "السفر",
+  job: "العمل / مقابلات",
+  study: "الدراسة",
+  exam: "اختبار (مبادئ)"
+};
+
+const PAIN_AR = {
+  speaking: "التحدث",
+  listening: "الاستماع",
+  grammar: "القواعد",
+  vocab: "المفردات"
+};
+
+const LEVEL_DESC = {
+  A1: "مبتدئ: جُمل بسيطة + مفردات أساسية.",
+  A2: "أساسي قوي: جُمل أكثر + مواقف يومية.",
+  B1: "متوسط: تواصل عملي + فهم نصوص بسيطة.",
+  B2: "فوق متوسط: محادثة أطول + دقة أعلى."
+};
+
+const placementQuestions = [
+  // 12 questions, mixed difficulty, with hints
+  { hint:"أساسيات", q:"Choose the correct sentence:", options:[
+    {t:"I goes to work every day.", ok:false},
+    {t:"I go to work every day.", ok:true},
+    {t:"I am go to work every day.", ok:false}
+  ]},
+  { hint:"مفردات", q:"What does 'cheap' mean?", options:[
+    {t:"Expensive", ok:false},
+    {t:"Not expensive", ok:true},
+    {t:"Dangerous", ok:false}
+  ]},
+  { hint:"قواعد", q:"She ___ coffee.", options:[
+    {t:"like", ok:false},
+    {t:"likes", ok:true},
+    {t:"liking", ok:false}
+  ]},
+  { hint:"زمن ماضي", q:"Past of 'eat' is:", options:[
+    {t:"eated", ok:false},
+    {t:"ate", ok:true},
+    {t:"eat", ok:false}
+  ]},
+  { hint:"حروف تعريف", q:"Choose correct:", options:[
+    {t:"I have a apple.", ok:false},
+    {t:"I have an apple.", ok:true},
+    {t:"I have the apple (first time).", ok:false}
+  ]},
+  { hint:"استعمالات", q:"What is 'Could you…?' used for?", options:[
+    {t:"Making a polite request", ok:true},
+    {t:"Talking about the past only", ok:false},
+    {t:"Giving commands", ok:false}
+  ]},
+  { hint:"معنى", q:"'I’m looking forward to it' means:", options:[
+    {t:"I’m excited about it", ok:true},
+    {t:"I’m angry about it", ok:false},
+    {t:"I don’t care", ok:false}
+  ]},
+  { hint:"قواعد", q:"Choose correct:", options:[
+    {t:"He don’t like tea.", ok:false},
+    {t:"He doesn’t like tea.", ok:true},
+    {t:"He not like tea.", ok:false}
+  ]},
+  { hint:"Present Perfect", q:"Choose correct:", options:[
+    {t:"I have finished my work.", ok:true},
+    {t:"I has finished my work.", ok:false},
+    {t:"I finish my work yesterday.", ok:false}
+  ]},
+  { hint:"قراءة قصيرة", q:"Choose best meaning: 'The meeting was postponed.'", options:[
+    {t:"The meeting happened earlier.", ok:false},
+    {t:"The meeting was delayed to a later time.", ok:true},
+    {t:"The meeting was cancelled forever.", ok:false}
+  ]},
+  { hint:"فوق متوسط", q:"Choose correct:", options:[
+    {t:"If I will have time, I will call you.", ok:false},
+    {t:"If I have time, I’ll call you.", ok:true},
+    {t:"If I time, I call you.", ok:false}
+  ]},
+  { hint:"تعبير", q:"'I’d rather stay home' means:", options:[
+    {t:"I prefer to stay home", ok:true},
+    {t:"I must stay home", ok:false},
+    {t:"I hate staying home", ok:false}
+  ]}
+];
+
+const curriculum = {
+  A1: {
+    grammar: [
+      {
+        title:"am / is / are (to be)",
+        points:[
+          "نستخدم am مع I، و is مع he/she/it، و are مع you/we/they.",
+          "أمثلة: <span class='en'>I am happy.</span> / <span class='en'>She is a doctor.</span> / <span class='en'>They are students.</span>"
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح:",
+          options:[
+            {t:"I is from Jordan.", ok:false},
+            {t:"I am from Jordan.", ok:true},
+            {t:"I are from Jordan.", ok:false}
+          ]
+        }
+      },
+      {
+        title:"a / an",
+        points:[
+          "a قبل صوت ساكن: <span class='en'>a book</span>",
+          "an قبل صوت متحرك: <span class='en'>an apple</span>",
+          "مهم: الصوت مش الحرف! مثال: <span class='en'>an hour</span> (h ساكت)."
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح:",
+          options:[
+            {t:"a orange", ok:false},
+            {t:"an orange", ok:true},
+            {t:"the orange (first time)", ok:false}
+          ]
+        }
+      }
+    ],
+    vocabSets: [
+      { id:"a1_food", title:"Food (أساسيات)", items:[
+        {word:"apple", meaning:"تفاحة", example:"<span class='en'>I eat an apple.</span>"},
+        {word:"water", meaning:"ماء", example:"<span class='en'>I drink water.</span>"},
+        {word:"bread", meaning:"خبز", example:"<span class='en'>I buy bread.</span>"},
+        {word:"rice", meaning:"رز", example:"<span class='en'>We cook rice.</span>"},
+      ]},
+      { id:"a1_daily", title:"Daily verbs", items:[
+        {word:"go", meaning:"يذهب", example:"<span class='en'>I go to work.</span>"},
+        {word:"eat", meaning:"يأكل", example:"<span class='en'>They eat lunch.</span>"},
+        {word:"sleep", meaning:"ينام", example:"<span class='en'>I sleep early.</span>"},
+        {word:"study", meaning:"يدرس", example:"<span class='en'>I study English.</span>"},
+      ]}
+    ],
+    dialogues:[
+      {
+        title:"At a café",
+        lines:[
+          {en:"Hi! Can I have a coffee, please?", ar:"مرحبًا! ممكن قهوة لو سمحت؟"},
+          {en:"Sure. Anything else?", ar:"أكيد. شيء آخر؟"},
+          {en:"Yes, a sandwich, please.", ar:"نعم، ساندويتش لو سمحت."}
+        ]
+      }
+    ]
+  },
+
+  A2: {
+    grammar: [
+      {
+        title:"Present Simple vs Present Continuous",
+        points:[
+          "Present Simple للروتين: <span class='en'>I work every day.</span>",
+          "Present Continuous للشيء الآن: <span class='en'>I am working now.</span>",
+          "إشارات: <span class='en'>every day</span> / <span class='en'>now</span> / <span class='en'>at the moment</span>."
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح (الآن):",
+          options:[
+            {t:"I work now.", ok:false},
+            {t:"I am working now.", ok:true},
+            {t:"I working now.", ok:false}
+          ]
+        }
+      },
+      {
+        title:"Past Simple (regular/irregular)",
+        points:[
+          "أفعال منتظمة: +ed مثل <span class='en'>played</span>.",
+          "غير منتظمة: <span class='en'>go → went</span>, <span class='en'>see → saw</span>.",
+          "مثال: <span class='en'>I went to the mall yesterday.</span>"
+        ],
+        miniQuiz:{
+          q:"Past of 'go'?",
+          options:[
+            {t:"goed", ok:false},
+            {t:"went", ok:true},
+            {t:"go", ok:false}
+          ]
+        }
+      }
+    ],
+    vocabSets: [
+      { id:"a2_travel", title:"Travel", items:[
+        {word:"ticket", meaning:"تذكرة", example:"<span class='en'>I need a ticket.</span>"},
+        {word:"hotel", meaning:"فندق", example:"<span class='en'>The hotel is nice.</span>"},
+        {word:"passport", meaning:"جواز سفر", example:"<span class='en'>Where is my passport?</span>"},
+        {word:"map", meaning:"خريطة", example:"<span class='en'>Let’s use a map.</span>"},
+      ]}
+    ],
+    dialogues:[
+      {
+        title:"Asking for directions",
+        lines:[
+          {en:"Excuse me, where is the bus station?", ar:"عذرًا، أين محطة الباص؟"},
+          {en:"Go straight, then turn left.", ar:"اذهب مستقيمًا ثم انعطف يسارًا."},
+          {en:"Thank you!", ar:"شكرًا!"}
+        ]
+      }
+    ]
+  },
+
+  B1: {
+    grammar: [
+      {
+        title:"Present Perfect (have/has + V3)",
+        points:[
+          "للخبرة/النتيجة: <span class='en'>I have visited Aqaba.</span>",
+          "مع <span class='en'>already / yet / just</span>.",
+          "سؤال: <span class='en'>Have you ever tried sushi?</span>"
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح:",
+          options:[
+            {t:"I have finish my work.", ok:false},
+            {t:"I have finished my work.", ok:true},
+            {t:"I finished my work yet.", ok:false}
+          ]
+        }
+      },
+      {
+        title:"Modals for advice (should / shouldn’t)",
+        points:[
+          "<span class='en'>You should</span> للنصيحة.",
+          "<span class='en'>You shouldn’t</span> للتحذير.",
+          "مثال: <span class='en'>You should practice daily.</span>"
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح:",
+          options:[
+            {t:"You should to study.", ok:false},
+            {t:"You should study.", ok:true},
+            {t:"You should studying.", ok:false}
+          ]
+        }
+      }
+    ],
+    vocabSets: [
+      { id:"b1_work", title:"Work", items:[
+        {word:"deadline", meaning:"موعد تسليم نهائي", example:"<span class='en'>We have a deadline tomorrow.</span>"},
+        {word:"meeting", meaning:"اجتماع", example:"<span class='en'>The meeting starts at 10.</span>"},
+        {word:"task", meaning:"مهمة", example:"<span class='en'>This task is important.</span>"},
+        {word:"improve", meaning:"يحسّن", example:"<span class='en'>I want to improve my English.</span>"},
+      ]}
+    ],
+    dialogues:[
+      {
+        title:"At work (polite)",
+        lines:[
+          {en:"Could you help me with this report?", ar:"ممكن تساعدني بهذا التقرير؟"},
+          {en:"Sure, I’ll take a look.", ar:"أكيد، رح أشوفه."},
+          {en:"Thanks, I appreciate it.", ar:"شكرًا، أقدّر ذلك."}
+        ]
+      }
+    ]
+  },
+
+  B2: {
+    grammar: [
+      {
+        title:"Conditionals (If + present, will...)",
+        points:[
+          "للمستقبل الممكن: <span class='en'>If I have time, I’ll call you.</span>",
+          "لا نستخدم <span class='en'>will</span> بعد <span class='en'>if</span> غالبًا."
+        ],
+        miniQuiz:{
+          q:"اختر الصحيح:",
+          options:[
+            {t:"If I will have time, I’ll call you.", ok:false},
+            {t:"If I have time, I’ll call you.", ok:true},
+            {t:"If I had time, I call you.", ok:false}
+          ]
+        }
+      },
+      {
+        title:"Speaking upgrade: opinion + reason + example",
+        points:[
+          "قالب ممتاز: <span class='en'>In my opinion… because… For example…</span>",
+          "مثال: <span class='en'>In my opinion, online learning is effective because it is flexible. For example…</span>"
+        ],
+        miniQuiz:{
+          q:"اختر الجملة الأقوى:",
+          options:[
+            {t:"Online learning good.", ok:false},
+            {t:"In my opinion, online learning is effective because it is flexible.", ok:true},
+            {t:"Online learning, I like.", ok:false}
+          ]
+        }
+      }
+    ],
+    vocabSets: [
+      { id:"b2_advanced", title:"Common advanced verbs", items:[
+        {word:"postpone", meaning:"يؤجل", example:"<span class='en'>They postponed the meeting.</span>"},
+        {word:"prefer", meaning:"يفضّل", example:"<span class='en'>I prefer tea to coffee.</span>"},
+        {word:"recommend", meaning:"يوصي", example:"<span class='en'>I recommend this book.</span>"},
+        {word:"avoid", meaning:"يتجنب", example:"<span class='en'>Try to avoid distractions.</span>"},
+      ]}
+    ],
+    dialogues:[
+      {
+        title:"Discussion (opinion)",
+        lines:[
+          {en:"What do you think about working remotely?", ar:"شو رأيك بالعمل عن بُعد؟"},
+          {en:"In my opinion, it saves time because there is no commute.", ar:"برأيي بيوفّر وقت لأنه ما في مواصلات."},
+          {en:"That’s a good point.", ar:"نقطة ممتازة."}
+        ]
+      }
+    ]
+  }
+};
+
+const practiceBank = {
+  A1: [
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>She ___ a student.</span>", options:[
+      {t:"am", ok:false}, {t:"is", ok:true}, {t:"are", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>I ___ in Amman.</span>", answer:"live", tip:"استخدم فعل بسيط (Present Simple)."},
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>___ apple</span>", options:[
+      {t:"a", ok:false}, {t:"an", ok:true}, {t:"the", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>They ___ happy.</span>", answer:"are", tip:"مع they نستخدم are."}
+  ],
+  A2: [
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>I am ___ now.</span>", options:[
+      {t:"work", ok:false},{t:"working", ok:true},{t:"worked", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>Yesterday I ___ to the market.</span>", answer:"went", tip:"go → went"},
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>He ___ like tea.</span>", options:[
+      {t:"don’t", ok:false},{t:"doesn’t", ok:true},{t:"not", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>We ___ a hotel near the beach.</span>", answer:"booked", tip:"Past simple regular +ed."}
+  ],
+  B1: [
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>I have ___ my homework.</span>", options:[
+      {t:"finish", ok:false},{t:"finished", ok:true},{t:"finishing", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>You should ___ daily.</span>", answer:"practice", tip:"بعد should يأتي فعل base form."},
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>Have you ever ___ sushi?</span>", options:[
+      {t:"try", ok:false},{t:"tried", ok:true},{t:"trying", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>The meeting was ___ to next week.</span>", answer:"postponed", tip:"postpone → postponed"}
+  ],
+  B2: [
+    { type:"mcq", q:"Choose correct:", prompt:"<span class='en'>If I ___ time, I’ll call you.</span>", options:[
+      {t:"will have", ok:false},{t:"have", ok:true},{t:"had", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>I’d rather ___ home today.</span>", answer:"stay", tip:"rather + base verb."},
+    { type:"mcq", q:"Choose stronger sentence:", prompt:"", options:[
+      {t:"Remote work good.", ok:false},
+      {t:"In my opinion, remote work is effective because it improves work-life balance.", ok:true},
+      {t:"Remote work I like.", ok:false}
+    ]},
+    { type:"fill", q:"Fill the blank:", prompt:"<span class='en'>Try to ___ distractions while studying.</span>", answer:"avoid", tip:"avoid = يتجنب"}
+  ]
+};
+
+/* -----------------------------
+   Helpers
+-------------------------------- */
+function $(id){ return document.getElementById(id); }
+
+function showToast(msg){
+  $("toastMsg").innerText = msg;
+  $("toast").classList.add("show");
+  setTimeout(()=> hideToast(), 1800);
+}
+function hideToast(){ $("toast").classList.remove("show"); }
+
+function todayKey(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+function speak(text){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.95;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }catch(e){
+    showToast("الاستماع غير مدعوم هنا");
+  }
+}
+
+/* -----------------------------
+   Persistence
+-------------------------------- */
+function load(){
+  const raw = localStorage.getItem(LS_KEY);
+  if(!raw) return;
+  try{
+    const saved = JSON.parse(raw);
+
+    // shallow merge safe
+    Object.assign(state.profile, saved.profile || {});
+    Object.assign(state.placement, saved.placement || {});
+    Object.assign(state.progress, saved.progress || {});
+    Object.assign(state.notes, saved.notes || {});
+    if(saved.srs && Array.isArray(saved.srs.words)) state.srs.words = saved.srs.words;
+
+    // onboardingStep if done
+    if(saved.profile && saved.profile.level) {
+      state.onboardingStep = 4;
+      setOnboardingDoneUI();
+    }
+
+  }catch(e){}
+}
+
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
+
+/* -----------------------------
+   Onboarding UI
+-------------------------------- */
+function setStepper(step){
+  state.onboardingStep = step;
+  $("stepLabel").innerText = `الخطوة ${step}/4`;
+
+  const widths = [0,0,0,0].map((_,i)=> (i<step? 100: 15));
+  $("dot1").style.width = widths[0]+"%";
+  $("dot2").style.width = widths[1]+"%";
+  $("dot3").style.width = widths[2]+"%";
+  $("dot4").style.width = widths[3]+"%";
+
+  // views
+  ["step1","step2","step3","step4"].forEach((sid, idx)=>{
+    const el = $(sid);
+    el.classList.remove("active");
+    el.style.display="none";
+    if(idx===step-1){
+      el.style.display="block";
+      el.classList.add("active");
+    }
+  });
+
+  save();
+}
+
+function calcLevelFromScore(score){
+  // 12 Q
+  if(score <= 3) return "A1";
+  if(score <= 6) return "A2";
+  if(score <= 9) return "B1";
+  return "B2";
+}
+
+function focusWeights(goal, pain, minutes){
+  // base
+  let vocab=25, grammar=25, listen=25, speak=25;
+
+  // goal tweaks
+  if(goal==="conversation"){ speak+=15; listen+=10; grammar-=10; vocab-=15; }
+  if(goal==="travel"){ vocab+=10; speak+=10; grammar-=5; listen-=15; }
+  if(goal==="job"){ speak+=10; vocab+=10; grammar+=5; listen-=25; }
+  if(goal==="study"){ grammar+=15; vocab+=10; listen+=5; speak-=30; }
+  if(goal==="exam"){ grammar+=15; listen+=15; vocab+=10; speak-=40; }
+
+  // pain tweaks
+  if(pain==="speaking"){ speak+=15; grammar-=5; vocab-=5; listen-=5; }
+  if(pain==="listening"){ listen+=18; speak+=6; vocab-=12; grammar-=12; }
+  if(pain==="grammar"){ grammar+=18; vocab+=4; speak-=12; listen-=10; }
+  if(pain==="vocab"){ vocab+=18; listen+=4; speak-=12; grammar-=10; }
+
+  // normalize
+  vocab = Math.max(10, vocab);
+  grammar = Math.max(10, grammar);
+  listen = Math.max(10, listen);
+  speak = Math.max(10, speak);
+
+  const sum = vocab+grammar+listen+speak;
+  vocab = Math.round((vocab/sum)*100);
+  grammar = Math.round((grammar/sum)*100);
+  listen = Math.round((listen/sum)*100);
+  speak = 100 - vocab - grammar - listen; // ensure 100
+
+  // minutes doesn't change weights, only session blocks lengths later
+  return {vocab, grammar, listen, speak};
+}
+
+function buildPlan(level, goal, minutes, pain){
+  const w = focusWeights(goal, pain, minutes);
+
+  // simple 4 weeks plan with increasing speaking/practice as level rises
+  const weekFocus = [];
+  for(let i=1;i<=4;i++){
+    let challenge = (level==="A1"? "أساسيات" : level==="A2"? "ثبات" : level==="B1"? "طلاقة" : "دقة");
+    weekFocus.push({
+      week:i,
+      title:`الأسبوع ${i}: ${challenge}`,
+      bullets:[
+        `جلسة يومية ${minutes} دقيقة (مقسمة حسب هدفك).`,
+        `مفردات + مراجعة ذكية (SRS).`,
+        `قواعد قصيرة + تطبيق مباشر.`,
+        `محادثة/ظل (Shadowing) على جُمَل جاهزة.`,
+        `اختبار قصير نهاية الأسبوع.`
+      ]
+    });
+  }
+
+  return {weights:w, weeks:weekFocus};
+}
+
+function renderPlan(plan){
+  const w = plan.weights;
+  $("pVocab").innerText = w.vocab+"%";
+  $("pGrammar").innerText = w.grammar+"%";
+  $("pListen").innerText = w.listen+"%";
+  $("pSpeak").innerText = w.speak+"%";
+  $("barVocab").style.width = w.vocab+"%";
+  $("barGrammar").style.width = w.grammar+"%";
+  $("barListen").style.width = w.listen+"%";
+  $("barSpeak").style.width = w.speak+"%";
+
+  // focus label
+  let focus = "Balanced";
+  const maxKey = Object.entries(w).sort((a,b)=>b[1]-a[1])[0][0];
+  if(maxKey==="vocab") focus="Vocabulary";
+  if(maxKey==="grammar") focus="Grammar";
+  if(maxKey==="listen") focus="Listening";
+  if(maxKey==="speak") focus="Speaking";
+  $("focusBadge").innerText = focus;
+
+  // plan text
+  const weeksHtml = plan.weeks.map(wk=>`
+    <div style="border:1px solid var(--border); border-radius:14px; padding:12px; margin-top:10px; background:#fff;">
+      <div style="font-weight:900; color:var(--navy);">${wk.title}</div>
+      <ul class="clean">${wk.bullets.map(b=>`<li>${b}</li>`).join("")}</ul>
+    </div>
+  `).join("");
+
+  $("planBox").innerHTML = weeksHtml;
+  $("planFull").innerHTML = weeksHtml;
+}
+
+function setOnboardingDoneUI(){
+  $("pillStatus").innerText = "مُعد ✅";
+  $("tabsWrap").style.display = "block";
+}
+
+function goDashboard(){
+  $("viewOnboarding").classList.remove("active");
+  $("viewOnboarding").style.display = "none";
+  $("viewDashboard").style.display = "block";
+  $("viewDashboard").classList.add("active");
+  setOnboardingDoneUI();
+  renderDashboardAll();
+  showTab("today");
+  save();
+}
+
+/* -----------------------------
+   Placement test UI
+-------------------------------- */
+function renderPlacementQuestion(){
+  const idx = state.placement.index;
+  const total = placementQuestions.length;
+  const q = placementQuestions[idx];
+
+  $("qTitle").innerHTML = q.q;
+  $("qHint").innerText = `📌 ${q.hint}`;
+  $("qCount").innerText = `${idx+1}/${total}`;
+
+  const selected = state.placement.answers[idx];
+
+  $("qOptions").innerHTML = q.options.map((o, i)=>{
+    const picked = (selected === i);
+    return `
+      <div class="option" data-i="${i}">
+        <div class="en" style="font-weight:900;">${o.t}</div>
+        <small>${picked ? "✅ اخترتها" : "انقر للاختيار"}</small>
+      </div>
+    `;
+  }).join("");
+
+  // click bind
+  [...$("qOptions").querySelectorAll(".option")].forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const i = +el.dataset.i;
+      state.placement.answers[idx] = i;
+      save();
+      renderPlacementQuestion();
+    });
+  });
+
+  $("qPrev").disabled = (idx===0);
+  $("qPrev").style.opacity = (idx===0 ? .5 : 1);
+}
+
+function finalizePlacement(){
+  let score = 0;
+  placementQuestions.forEach((q, idx)=>{
+    const a = state.placement.answers[idx];
+    if(a===null) return;
+    if(q.options[a].ok) score++;
+  });
+  state.profile.score = score;
+  state.profile.level = calcLevelFromScore(score);
+
+  // create initial SRS word pool based on level
+  initSRSIfEmpty();
+
+  // show result
+  $("levelBadge").innerText = state.profile.level;
+
+  const name = state.profile.name ? `يا ${state.profile.name}، ` : "";
+  $("resultText").innerHTML = `
+    ${name}مستواك الحالي: <b>${state.profile.level}</b> — ${LEVEL_DESC[state.profile.level]}
+    <br><br>
+    هدفك: <b>${GOALS_AR[state.profile.goal]}</b> — ونقطة ضعفك: <b>${PAIN_AR[state.profile.pain]}</b>.
+    <br>
+    راح نعطيك جلسة يومية خطوة-بخطوة + تمارين بتصحيح فوري.
+  `;
+
+  $("planBadge").innerText = `${state.profile.minutes} دقيقة/يوم`;
+
+  const plan = buildPlan(state.profile.level, state.profile.goal, state.profile.minutes, state.profile.pain);
+  renderPlan(plan);
+
+  save();
+}
+
+/* -----------------------------
+   SRS (Spaced Repetition)
+-------------------------------- */
+function initSRSIfEmpty(){
+  if(state.srs.words.length>0) return;
+
+  const level = state.profile.level || "A1";
+  const sets = curriculum[level].vocabSets;
+  const items = sets.flatMap(s=>s.items);
+
+  const now = Date.now();
+  state.srs.words = items.map((it, idx)=>({
+    id: `${level}_${idx}_${it.word}`,
+    word: it.word,
+    meaning: it.meaning,
+    example: it.example,
+    box: 1,
+    nextReviewTs: now // due now
+  }));
+  save();
+}
+
+function dueWords(){
+  const now = Date.now();
+  return state.srs.words.filter(w => (w.nextReviewTs || 0) <= now)
+    .sort((a,b)=> (a.nextReviewTs||0) - (b.nextReviewTs||0));
+}
+
+function scheduleWord(wordObj, known){
+  // known => advance box, hard => drop/keep low
+  const now = Date.now();
+  if(known){
+    wordObj.box = clamp(wordObj.box + 1, 1, 5);
+  }else{
+    wordObj.box = clamp(wordObj.box - 1, 1, 5);
+  }
+  const days = intervalsDays[wordObj.box] ?? 7;
+  wordObj.nextReviewTs = now + days*24*60*60*1000;
+  state.progress.points += known ? 5 : 2;
+  save();
+}
+
+/* -----------------------------
+   Dashboard Rendering
+-------------------------------- */
+function showTab(name){
+  // set tab active
+  [...document.querySelectorAll(".tab")].forEach(t=>{
+    t.classList.toggle("active", t.dataset.tab===name);
+  });
+
+  // show view
+  ["today","plan","learn","practice","progress"].forEach(n=>{
+    const el = $("tab_"+n);
+    el.style.display = (n===name? "block" : "none");
+  });
+
+  const titles = {
+    today:"جلسة اليوم",
+    plan:"الخطة",
+    learn:"التعلّم",
+    practice:"التدريب",
+    progress:"التقدّم"
+  };
+  $("dashTitle").innerText = titles[name] || "لوحة التحكم";
+
+  renderDashboardAll();
+}
+
+function updateProfileSide(){
+  const p = state.profile;
+  $("profileBadge").innerText = `${p.level} • ${p.minutes}m`;
+  $("dashMeta").innerText = `${GOALS_AR[p.goal]} • ${PAIN_AR[p.pain]}`;
+
+  const name = p.name ? `<b>${p.name}</b>` : `<b>مستخدم</b>`;
+  $("profileBox").innerHTML = `
+    ${name}<br>
+    المستوى: <b>${p.level}</b><br>
+    الهدف: <b>${GOALS_AR[p.goal]}</b><br>
+    وقتك: <b>${p.minutes} دقيقة/يوم</b><br>
+    نقاطك: <b>${state.progress.points}</b>
+  `;
+}
+
+function ensureDailyStreak(){
+  const today = todayKey();
+  if(!state.progress.lastDay){
+    state.progress.lastDay = today;
+    state.progress.streak = 1;
+    save();
+    return;
+  }
+  if(state.progress.lastDay === today) return;
+
+  // if consecutive day
+  const last = new Date(state.progress.lastDay);
+  const cur = new Date(today);
+  const diffDays = Math.round((cur-last)/(24*60*60*1000));
+  if(diffDays === 1){
+    state.progress.streak += 1;
+  }else{
+    state.progress.streak = 1;
+  }
+  state.progress.lastDay = today;
+  state.progress.todayPercent = 0;
+  state.progress.sessionStep = 0;
+  state.progress.practiceIndex = 0;
+  state.progress.practiceAnswers = {};
+  save();
+}
+
+function setTodayProgress(percent){
+  state.progress.todayPercent = clamp(percent,0,100);
+  $("todayBar").style.width = state.progress.todayPercent + "%";
+  $("todayBadge").innerText = state.progress.todayPercent + "%";
+  save();
+}
+
+function renderGrammarLesson(){
+  const level = state.profile.level;
+  const lessons = curriculum[level].grammar;
+  const idx = (new Date().getDate()) % lessons.length;
+  const lesson = lessons[idx];
+
+  $("grammarTag").innerText = `${level} Grammar`;
+  $("grammarLesson").innerHTML = `
+    <div style="font-weight:900; color:var(--navy); margin-bottom:8px;">${lesson.title}</div>
+    <ul class="clean">${lesson.points.map(p=>`<li>${p}</li>`).join("")}</ul>
+    <div class="hr"></div>
+    <div style="font-weight:900; color:var(--navy);">${lesson.miniQuiz.q}</div>
+    ${lesson.miniQuiz.options.map((o,i)=>`
+      <div class="option" data-gq="${i}"><span class="en">${o.t}</span></div>
+    `).join("")}
+    <div class="note" id="gqMsg"></div>
+  `;
+
+  // bind grammar mini quiz
+  [...$("grammarLesson").querySelectorAll(".option[data-gq]")].forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const i = +el.dataset.gq;
+      const ok = lesson.miniQuiz.options[i].ok;
+      $("gqMsg").innerHTML = ok
+        ? `<span style="color:var(--ok); font-weight:900;">✅ صحيح!</span>`
+        : `<span style="color:var(--bad); font-weight:900;">❌ جرّب مرة ثانية.</span>`;
+      if(ok){
+        state.progress.points += 3;
+        setTodayProgress(state.progress.todayPercent + 8);
+        save();
+      }
+    });
+  });
+
+  // notes
+  $("notesArea").value = state.notes.grammar || "";
+}
+
+function renderFlashcard(){
+  initSRSIfEmpty();
+  const due = dueWords();
+  const wordObj = due[0] || state.srs.words[0];
+
+  $("flashcard").innerHTML = `
+    <div class="badge">📌 للمراجعة الآن</div>
+    <div class="hr"></div>
+    <div style="font-size:28px; font-weight:1000; color:var(--navy);" class="en">${wordObj.word}</div>
+    <div style="margin-top:6px; font-weight:900;">المعنى: <span style="color:var(--text);">${wordObj.meaning}</span></div>
+    <div style="margin-top:10px; padding:12px; border:1px dashed #cbd5e1; border-radius:14px; background:#fff;">
+      <div style="font-weight:900; color:var(--navy); margin-bottom:6px;">مثال:</div>
+      <div>${wordObj.example}</div>
+    </div>
+    <div class="note">صندوق التكرار: <b>${wordObj.box}</b> (كل ما يزيد، المراجعة تصير أبعد)</div>
+  `;
+
+  // bind actions
+  $("btnSpeakWord").onclick = ()=> speak(wordObj.word);
+  $("btnKnown").onclick = ()=>{
+    scheduleWord(wordObj, true);
+    setTodayProgress(state.progress.todayPercent + 10);
+    renderFlashcard();
+    showToast("✅ ممتاز! انحسبت مفردة");
+  };
+  $("btnHard").onclick = ()=>{
+    scheduleWord(wordObj, false);
+    setTodayProgress(state.progress.todayPercent + 6);
+    renderFlashcard();
+    showToast("🤯 تمام.. رجعناها للمراجعة قريب");
+  };
+}
+
+function renderPractice(){
+  const level = state.profile.level;
+  const list = practiceBank[level];
+  const idx = clamp(state.progress.practiceIndex, 0, list.length-1);
+  const item = list[idx];
+
+  $("practiceCount").innerText = `${idx+1}/${list.length}`;
+
+  if(item.type==="mcq"){
+    $("practiceBox").innerHTML = `
+      <div style="font-weight:900; color:var(--navy);">${item.q}</div>
+      ${item.prompt? `<div style="margin-top:8px; font-weight:900;">${item.prompt}</div>` : ""}
+      <div class="hr"></div>
+      ${item.options.map((o,i)=>`
+        <div class="option" data-p="${idx}" data-i="${i}">
+          ${item.prompt ? `<div class="en">${o.t}</div>` : `<div>${o.t}</div>`}
+        </div>
+      `).join("")}
+      <div class="note" id="pMsg"></div>
+    `;
+
+    [...$("practiceBox").querySelectorAll(".option[data-i]")].forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const i = +el.dataset.i;
+        const ok = item.options[i].ok;
+        state.progress.practiceAnswers[idx] = {type:"mcq", pick:i, ok};
+        save();
+
+        // visual feedback
+        [...$("practiceBox").querySelectorAll(".option[data-i]")].forEach((oEl, j)=>{
+          oEl.classList.remove("correct","wrong");
+          if(j===i){
+            oEl.classList.add(ok ? "correct" : "wrong");
+          }
+        });
+
+        $("pMsg").innerHTML = ok
+          ? `<span style="color:var(--ok); font-weight:900;">✅ صح!</span>`
+          : `<span style="color:var(--bad); font-weight:900;">❌ غلط. جرّب مرة ثانية أو انتقل.</span>`;
+
+        if(ok){
+          state.progress.points += 4;
+          setTodayProgress(state.progress.todayPercent + 8);
+          save();
+        }
+      });
+    });
+
+  } else if(item.type==="fill"){
+    $("practiceBox").innerHTML = `
+      <div style="font-weight:900; color:var(--navy);">${item.q}</div>
+      <div style="margin-top:8px; font-weight:900;">${item.prompt}</div>
+      <div class="hr"></div>
+      <label>اكتب الإجابة (بالإنجليزي)</label>
+      <input id="fillAns" placeholder="اكتب هنا..." class="en"/>
+      <button class="btn" id="checkFill">تحقق ✅</button>
+      <div class="note" id="fillMsg"></div>
+      <div class="note">تلميح: ${item.tip}</div>
+    `;
+
+    $("checkFill").onclick = ()=>{
+      const user = ($("fillAns").value || "").trim().toLowerCase();
+      const ans = item.answer.trim().toLowerCase();
+      const ok = user === ans;
+
+      state.progress.practiceAnswers[idx] = {type:"fill", user, ok};
+      save();
+
+      $("fillMsg").innerHTML = ok
+        ? `<span style="color:var(--ok); font-weight:900;">✅ ممتاز!</span>`
+        : `<span style="color:var(--bad); font-weight:900;">❌ مش صح. الجواب: <b class="en">${item.answer}</b></span>`;
+
+      if(ok){
+        state.progress.points += 5;
+        setTodayProgress(state.progress.todayPercent + 10);
+      }else{
+        state.progress.points += 2;
+        setTodayProgress(state.progress.todayPercent + 4);
+      }
+      save();
+    };
+  }
+
+  $("pracPrev").disabled = (idx===0);
+  $("pracPrev").style.opacity = (idx===0? .5 : 1);
+  $("pracNext").innerText = (idx===list.length-1 ? "إنهاء ✅" : "التالي →");
+}
+
+function renderProgressTab(){
+  ensureDailyStreak();
+
+  $("streakBadge").innerText = `🔥 ${state.progress.streak} أيام`;
+  const due = dueWords();
+  $("dueBadge").innerText = `${due.length} كلمة`;
+
+  $("progressSummary").innerHTML = `
+    <ul class="clean">
+      <li>نقاط: <b>${state.progress.points}</b></li>
+      <li>Streak: <b>${state.progress.streak}</b> يوم</li>
+      <li>تقدم اليوم: <b>${state.progress.todayPercent}%</b></li>
+      <li>مستوى: <b>${state.profile.level}</b></li>
+      <li>هدف: <b>${GOALS_AR[state.profile.goal]}</b></li>
+    </ul>
+  `;
+
+  if(due.length===0){
+    $("dueWords").innerHTML = `<div class="muted">✅ ما في كلمات للمراجعة الآن. ممتاز!</div>`;
+  }else{
+    $("dueWords").innerHTML = due.slice(0,8).map(w=>`
+      <div style="border:1px solid var(--border); border-radius:14px; padding:10px; margin-top:10px;">
+        <div class="en" style="font-weight:1000; color:var(--navy);">${w.word}</div>
+        <div class="muted">المعنى: <b style="color:var(--text);">${w.meaning}</b> • صندوق: <b>${w.box}</b></div>
+      </div>
+    `).join("");
+  }
+}
+
+function renderSessionStep(){
+  const level = state.profile.level;
+  const minutes = +state.profile.minutes;
+  const plan = buildPlan(level, state.profile.goal, minutes, state.profile.pain);
+  const w = plan.weights;
+
+  // break minutes by weights (rounded)
+  const blocks = {
+    vocab: Math.max(3, Math.round(minutes * w.vocab / 100)),
+    grammar: Math.max(3, Math.round(minutes * w.grammar / 100)),
+    listen: Math.max(3, Math.round(minutes * w.listen / 100)),
+    speak: Math.max(3, minutes - (Math.max(3, Math.round(minutes*w.vocab/100)) + Math.max(3, Math.round(minutes*w.grammar/100)) + Math.max(3, Math.round(minutes*w.listen/100))))
+  };
+
+  const steps = [
+    { title:"1) إحماء سريع (60 ثانية)", body: `
+      <div class="muted">اقرأ الجملة بصوت عالي 3 مرات (Shadowing):</div>
+      <div style="margin-top:10px; padding:12px; border:1px solid var(--border); border-radius:14px;">
+        <div class="en" style="font-weight:1000; font-size:18px;">Today I will practice English step by step.</div>
+        <div class="muted" style="margin-top:6px;">اليوم رح أتدرّب إنجليزي خطوة بخطوة.</div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn secondary" onclick="speak('Today I will practice English step by step.')">🔊 استمع</button>
+      </div>
+      <div class="note">✅ الهدف: تجهّز لسانك للنطق.</div>
+    `},
+    { title:`2) مفردات (${blocks.vocab} دقائق)`, body: `
+      <div class="muted">راجِع كلمة واحدة الآن (SRS) + قل المثال بصوتك.</div>
+      <div class="hr"></div>
+      <div id="sessionVocab"></div>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn secondary" id="svSpeak">🔊 استمع للكلمة</button>
+        <button class="btn" id="svKnown">عرفتها ✅</button>
+        <button class="btn secondary" id="svHard">صعبة 🤯</button>
+      </div>
+    `},
+    { title:`3) قواعد (${blocks.grammar} دقائق)`, body: `
+      <div class="muted">اقرأ القاعدة + جاوب سؤال صغير.</div>
+      <div class="hr"></div>
+      <div id="sessionGrammar"></div>
+    `},
+    { title:`4) استماع/نطق (${blocks.listen} دقائق)`, body: `
+      <div class="muted">اسمع الحوار وكرر جملة جملة.</div>
+      <div class="hr"></div>
+      <div id="sessionDialogue"></div>
+    `},
+    { title:`5) تطبيق/محادثة (${blocks.speak} دقائق)`, body: `
+      <div class="muted">اكتب ردك (بالإنجليزي). ثم اضغط استمع لنموذج جواب.</div>
+      <div class="hr"></div>
+      <div id="sessionSpeaking"></div>
+    `}
+  ];
+
+  const s = clamp(state.progress.sessionStep, 0, steps.length-1);
+  const step = steps[s];
+
+  $("sessionBox").innerHTML = `
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+      <div style="font-weight:1000; color:var(--navy); font-size:16px;">${step.title}</div>
+      <span class="badge">${s+1}/5</span>
+    </div>
+    <div style="margin-top:10px;">${step.body}</div>
+  `;
+
+  // Inject dynamic content per step
+  if(s===1){
+    initSRSIfEmpty();
+    const wordObj = (dueWords()[0] || state.srs.words[0]);
+    $("sessionVocab").innerHTML = `
+      <div class="badge">كلمة اليوم</div>
+      <div class="hr"></div>
+      <div class="en" style="font-weight:1000; font-size:26px; color:var(--navy);">${wordObj.word}</div>
+      <div style="margin-top:6px; font-weight:900;">المعنى: ${wordObj.meaning}</div>
+      <div style="margin-top:10px; padding:12px; border:1px dashed #cbd5e1; border-radius:14px;">
+        <div style="font-weight:900; color:var(--navy); margin-bottom:6px;">مثال:</div>
+        <div>${wordObj.example}</div>
+      </div>
+    `;
+    $("svSpeak").onclick = ()=> speak(wordObj.word);
+    $("svKnown").onclick = ()=>{
+      scheduleWord(wordObj, true);
+      setTodayProgress(state.progress.todayPercent + 12);
+      renderSessionStep();
+      showToast("✅ ممتاز! حفظنا تقدم المفردات");
+    };
+    $("svHard").onclick = ()=>{
+      scheduleWord(wordObj, false);
+      setTodayProgress(state.progress.todayPercent + 8);
+      renderSessionStep();
+      showToast("🤯 تمام.. راح نكررها قريب");
+    };
+  }
+
+  if(s===2){
+    const lessons = curriculum[level].grammar;
+    const idx = (new Date().getDay()) % lessons.length;
+    const lesson = lessons[idx];
+    $("sessionGrammar").innerHTML = `
+      <div style="font-weight:1000; color:var(--navy); margin-bottom:8px;">${lesson.title}</div>
+      <ul class="clean">${lesson.points.map(p=>`<li>${p}</li>`).join("")}</ul>
+      <div class="hr"></div>
+      <div style="font-weight:1000; color:var(--navy);">${lesson.miniQuiz.q}</div>
+      ${lesson.miniQuiz.options.map((o,i)=>`
+        <div class="option" data-sg="${i}"><span class="en">${o.t}</span></div>
+      `).join("")}
+      <div class="note" id="sgMsg"></div>
+    `;
+    [...$("sessionGrammar").querySelectorAll(".option[data-sg]")].forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const i = +el.dataset.sg;
+        const ok = lesson.miniQuiz.options[i].ok;
+        $("sgMsg").innerHTML = ok
+          ? `<span style="color:var(--ok); font-weight:1000;">✅ صح!</span>`
+          : `<span style="color:var(--bad); font-weight:1000;">❌ جرّب تاني.</span>`;
+        if(ok){
+          state.progress.points += 4;
+          setTodayProgress(state.progress.todayPercent + 10);
+          save();
+        }
+      });
+    });
+  }
+
+  if(s===3){
+    const ds = curriculum[level].dialogues;
+    const d = ds[(new Date().getDate()) % ds.length];
+    $("sessionDialogue").innerHTML = `
+      <div class="badge">حوار: ${d.title}</div>
+      <div class="hr"></div>
+      ${d.lines.map((ln, i)=>`
+        <div style="border:1px solid var(--border); border-radius:14px; padding:12px; margin-top:10px;">
+          <div class="en" style="font-weight:1000;">${ln.en}</div>
+          <div class="muted" style="margin-top:6px;">${ln.ar}</div>
+          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <button class="btn secondary" onclick="speak(${JSON.stringify(ln.en)})">🔊 استمع</button>
+          </div>
+        </div>
+      `).join("")}
+      <div class="note">✅ كرر كل جملة 2–3 مرات بصوتك.</div>
+    `;
+  }
+
+  if(s===4){
+    const promptsByGoal = {
+      conversation: "اكتب 2–3 جُمل عن يومك اليوم.",
+      travel: "اكتب جملتين تطلب فيهم اتجاهات أو حجز فندق.",
+      job: "اكتب جملتين تعرف فيها عن نفسك في مقابلة.",
+      study: "اكتب جملتين عن تخصصك ولماذا تدرسه.",
+      exam: "اكتب جملة Opinion + because + example."
+    };
+    const prompt = promptsByGoal[state.profile.goal] || promptsByGoal.conversation;
+
+    const modelAnswers = {
+      conversation: "Today I feel good. I will practice English for 30 minutes.",
+      travel: "Excuse me, where is the nearest hotel? I’d like to book a room for two nights.",
+      job: "I have experience in customer service. I am a fast learner and I work well in a team.",
+      study: "I study computer science because I enjoy solving problems. I want to build useful apps.",
+      exam: "In my opinion, online learning is effective because it is flexible. For example, students can study anytime."
+    };
+
+    $("sessionSpeaking").innerHTML = `
+      <div style="font-weight:1000; color:var(--navy);">مهمة المحادثة:</div>
+      <div class="muted" style="margin-top:6px;">${prompt}</div>
+      <label>اكتب إجابتك (بالإنجليزي)</label>
+      <textarea id="spkAnswer" class="en" placeholder="Type here..."></textarea>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="saveSpk">حفظ الإجابة ✅</button>
+        <button class="btn secondary" id="listenModel">🔊 اسمع نموذج جواب</button>
+      </div>
+      <div class="note" id="spkMsg"></div>
+    `;
+
+    $("listenModel").onclick = ()=> speak(modelAnswers[state.profile.goal] || modelAnswers.conversation);
+    $("saveSpk").onclick = ()=>{
+      const txt = ($("spkAnswer").value || "").trim();
+      if(!txt){
+        $("spkMsg").innerHTML = `<span style="color:var(--warn); font-weight:1000;">⚠️ اكتب شيء بسيط حتى لو جملة واحدة.</span>`;
+        return;
+      }
+      state.progress.points += 6;
+      setTodayProgress(state.progress.todayPercent + 18);
+      save();
+      $("spkMsg").innerHTML = `<span style="color:var(--ok); font-weight:1000;">✅ انحفظت. ممتاز!</span>`;
+      showToast("✅ خلصت تطبيق المحادثة");
+    };
+  }
+
+  // buttons
+  $("sessionBack").disabled = (s===0);
+  $("sessionBack").style.opacity = (s===0 ? .5 : 1);
+
+  $("sessionNext").innerText = (s===4 ? "إنهاء الجلسة ✅" : "التالي →");
+}
+
+function renderDashboardAll(){
+  ensureDailyStreak();
+  updateProfileSide();
+  setTodayProgress(state.progress.todayPercent);
+
+  // plan
+  const plan = buildPlan(state.profile.level, state.profile.goal, state.profile.minutes, state.profile.pain);
+  renderPlan(plan);
+
+  // learn tab pieces
+  renderGrammarLesson();
+  renderFlashcard();
+  renderPractice();
+  renderProgressTab();
+  renderSessionStep();
+}
+
+/* -----------------------------
+   Events
+-------------------------------- */
+function initEvents(){
+  // Reset
+  $("btnReset").onclick = ()=>{
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  };
+
+  // Tabs
+  $("tabs").addEventListener("click", (e)=>{
+    const btn = e.target.closest(".tab");
+    if(!btn) return;
+    showTab(btn.dataset.tab);
+  });
+
+  // onboarding step navigation
+  $("goStep2").onclick = ()=>{
+    state.profile.name = $("inpName").value.trim();
+    state.profile.minutes = +$("inpMinutes").value;
+    save();
+    setStepper(2);
+  };
+  $("back1").onclick = ()=> setStepper(1);
+
+  $("goStep3").onclick = ()=>{
+    state.profile.goal = $("inpGoal").value;
+    state.profile.pain = $("inpPain").value;
+    save();
+    setStepper(3);
+    state.placement.index = 0;
+    renderPlacementQuestion();
+  };
+
+  $("qPrev").onclick = ()=>{
+    state.placement.index = clamp(state.placement.index-1, 0, placementQuestions.length-1);
+    save();
+    renderPlacementQuestion();
+  };
+
+  $("qNext").onclick = ()=>{
+    const idx = state.placement.index;
+    // require answer
+    if(state.placement.answers[idx] === null){
+      showToast("اختار إجابة أولاً ⚠️");
+      return;
+    }
+    if(idx < placementQuestions.length-1){
+      state.placement.index += 1;
+      save();
+      renderPlacementQuestion();
+    }else{
+      // done
+      finalizePlacement();
+      setStepper(4);
+      save();
+    }
+  };
+
+  $("backToTest").onclick = ()=>{
+    setStepper(3);
+    renderPlacementQuestion();
+  };
+
+  $("finishOnboarding").onclick = ()=>{
+    setOnboardingDoneUI();
+    save();
+    goDashboard();
+  };
+
+  // session controls
+  $("sessionBack").onclick = ()=>{
+    state.progress.sessionStep = clamp(state.progress.sessionStep-1, 0, 4);
+    save();
+    renderSessionStep();
+  };
+
+  $("sessionNext").onclick = ()=>{
+    if(state.progress.sessionStep < 4){
+      state.progress.sessionStep += 1;
+      save();
+      renderSessionStep();
+    }else{
+      // finish session
+      state.progress.points += 10;
+      setTodayProgress(Math.max(state.progress.todayPercent, 100));
+      save();
+      renderSessionStep();
+      showToast("🎉 خلصت جلسة اليوم!");
+      showTab("progress");
+    }
+  };
+
+  // practice nav
+  $("pracPrev").onclick = ()=>{
+    state.progress.practiceIndex = clamp(state.progress.practiceIndex-1, 0, practiceBank[state.profile.level].length-1);
+    save();
+    renderPractice();
+  };
+  $("pracNext").onclick = ()=>{
+    const list = practiceBank[state.profile.level];
+    if(state.progress.practiceIndex < list.length-1){
+      state.progress.practiceIndex += 1;
+      save();
+      renderPractice();
+    }else{
+      showToast("✅ خلصت التدريب!");
+      setTodayProgress(state.progress.todayPercent + 12);
+      showTab("progress");
+    }
+  };
+
+  // notes
+  $("saveNotes").onclick = ()=>{
+    state.notes.grammar = $("notesArea").value;
+    save();
+    showToast("✅ حفظنا ملاحظاتك");
+  };
+
+  // quick jumps
+  $("jumpToday").onclick = ()=> showTab("today");
+  $("jumpVocab").onclick = ()=> showTab("learn");
+  $("jumpPractice").onclick = ()=> showTab("practice");
+
+  // export
+  $("btnExport").onclick = ()=>{
+    const data = JSON.stringify(state, null, 2);
+    $("exportBox").innerHTML = `<div class="note">انسخ هذا واحفظه عندك:</div><pre style="direction:ltr; background:#0b1220; color:#e5e7eb; padding:12px; border-radius:14px; overflow:auto; max-height:220px;">${escapeHtml(data)}</pre>`;
+  };
+}
+
+/* -----------------------------
+   Utils
+-------------------------------- */
+function escapeHtml(str){
+  return str
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+}
+
+/* -----------------------------
+   Boot
+-------------------------------- */
+load();
+initEvents();
+
+// onboarding initial values
+$("inpName").value = state.profile.name || "";
+$("inpMinutes").value = String(state.profile.minutes || 30);
+$("inpGoal").value = state.profile.goal || "conversation";
+$("inpPain").value = state.profile.pain || "speaking";
+
+// if already set up
+if(state.profile.level){
+  setOnboardingDoneUI();
+  $("viewOnboarding").style.display="none";
+  $("viewOnboarding").classList.remove("active");
+  $("viewDashboard").style.display="block";
+  $("viewDashboard").classList.add("active");
+  renderDashboardAll();
+} else {
+  // fresh
+  setStepper(1);
+}
+</script>
+</body>
+</html>
