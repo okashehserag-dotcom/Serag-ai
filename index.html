@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Empire Builder (Global ~1600) — Final Single-File</title>
+  <title>Empire Builder (Global ~1600) — Balanced Final</title>
   <style>
-    /* =========================
-       THEME TOKENS (Light/Dark)
-       ========================= */
     :root{
       --radius:16px;
-      --shadow: 0 18px 60px rgba(0,0,0,.25);
+      --shadow: 0 18px 60px rgba(0,0,0,.22);
       --glassBlur: blur(10px);
 
       /* Dark default */
       --bg0:#070a14;
       --bg1:#0b1020;
-      --panel: rgba(16,24,52,.58);
-      --panel2: rgba(12,18,40,.62);
+      --panel: rgba(16,24,52,.60);
+      --panel2: rgba(12,18,40,.64);
       --stroke: rgba(255,255,255,.12);
       --text: rgba(234,240,255,.92);
       --muted: rgba(234,240,255,.70);
@@ -38,12 +35,11 @@
       --lake: rgba(120,190,255,.35);
     }
 
-    /* Light theme overrides */
     [data-theme="light"]{
       --bg0:#f7f8fd;
       --bg1:#edf1ff;
-      --panel: rgba(255,255,255,.72);
-      --panel2: rgba(255,255,255,.78);
+      --panel: rgba(255,255,255,.76);
+      --panel2: rgba(255,255,255,.82);
       --stroke: rgba(20,25,60,.14);
       --text: rgba(12,16,35,.92);
       --muted: rgba(12,16,35,.65);
@@ -77,7 +73,7 @@
       color: var(--text);
     }
 
-    /* ===== HUD ===== */
+    /* HUD */
     .topbar{
       position:fixed; top:12px; left:12px; right:12px;
       display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
@@ -94,8 +90,8 @@
       box-shadow: var(--shadow);
       font-size:12px;
     }
-    .leftCard{min-width:340px; max-width:min(420px, calc(100vw - 24px));}
-    .rightCard{width:380px; max-width: calc(100vw - 24px);}
+    .leftCard{min-width:340px; max-width:min(430px, calc(100vw - 24px));}
+    .rightCard{width:410px; max-width: calc(100vw - 24px);}
 
     h3{margin:0 0 8px; font-size:13px}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
@@ -153,21 +149,19 @@
       border:1px solid var(--stroke);
       border-radius:14px;
       padding:8px;
-      max-height:140px;
+      max-height:150px;
       overflow:auto;
       line-height:1.5;
-      color: var(--text);
     }
 
     .small{font-size:11px; color:var(--muted); line-height:1.5}
-
     .actions{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap:10px;
     }
 
-    /* ===== Modal ===== */
+    /* Modals */
     .modalBack{
       position:fixed; inset:0; z-index:50;
       display:none; align-items:center; justify-content:center;
@@ -177,7 +171,7 @@
     }
     [data-theme="light"] .modalBack{ background: rgba(30,35,60,.22); }
     .modal{
-      width:min(560px, 100%);
+      width:min(620px, 100%);
       background: var(--panel2);
       border:1px solid var(--stroke);
       border-radius:18px;
@@ -194,20 +188,16 @@
       background: rgba(18,26,56,.20);
       outline:none;
     }
-    [data-theme="light"] input, [data-theme="light"] select{
-      background: rgba(255,255,255,.72);
-    }
+    [data-theme="light"] input, [data-theme="light"] select{ background: rgba(255,255,255,.72); }
     input:focus, select:focus{border-color: color-mix(in oklab, var(--accent) 55%, var(--stroke))}
 
-    /* ===== Map ===== */
+    /* Map */
     svg{width:100vw;height:100vh;display:block}
-
     .ocean{fill:url(#oceanGrad)}
     .graticule{fill:none; stroke: color-mix(in oklab, var(--stroke) 55%, transparent); stroke-width:1; vector-effect:non-scaling-stroke}
     .land{fill: var(--landFill); stroke: var(--landStroke); stroke-width:1; vector-effect:non-scaling-stroke;
       filter: drop-shadow(0 16px 30px rgba(0,0,0,.12));
     }
-
     .rivers{fill:none; stroke: var(--river); stroke-width:0.8; vector-effect:non-scaling-stroke; opacity:.85}
     .lakes{fill: var(--lake); stroke: color-mix(in oklab, var(--river) 35%, transparent); stroke-width:0.6; vector-effect:non-scaling-stroke; opacity:.9}
 
@@ -217,30 +207,26 @@
       vector-effect:non-scaling-stroke;
       opacity:.96;
       cursor:pointer;
-      transition: filter .15s ease, opacity .15s ease, stroke .15s ease;
+      transition: filter .12s ease, opacity .12s ease, stroke .12s ease;
     }
-    .province:hover{filter: drop-shadow(0 12px 18px rgba(0,0,0,.25)); opacity:1}
+    .province:hover{filter: drop-shadow(0 12px 18px rgba(0,0,0,.22)); opacity:1}
     .province.sel{stroke: color-mix(in oklab, var(--text) 70%, transparent); stroke-width: 1.8}
 
+    /* Labels (fixed: shrink when zoom increases + show only major cities) */
     .labels text{
-      font-size: 10px;
-      fill: color-mix(in oklab, var(--text) 85%, transparent);
+      fill: color-mix(in oklab, var(--text) 88%, transparent);
       paint-order: stroke;
       stroke: color-mix(in oklab, var(--bg1) 70%, transparent);
       stroke-width: 3px;
       stroke-linejoin: round;
       pointer-events:none;
       opacity: .92;
+      vector-effect: non-scaling-stroke;
     }
-    [data-theme="light"] .labels text{
-      stroke: rgba(255,255,255,.9);
-    }
+    [data-theme="light"] .labels text{ stroke: rgba(255,255,255,.92); }
 
     .iconLayer{pointer-events:none}
-    .icon{
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.22));
-      opacity:.95;
-    }
+    .icon{ filter: drop-shadow(0 10px 14px rgba(0,0,0,.18)); opacity:.95; }
 
     .attackLine{
       fill:none;
@@ -249,14 +235,12 @@
       stroke-dasharray: 6 10;
       vector-effect:non-scaling-stroke;
       opacity:0;
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,.25));
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.22));
     }
     .ping{fill: color-mix(in oklab, var(--text) 90%, transparent); opacity:0; pointer-events:none;}
-    .armyDot{
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
-    }
+    .armyDot{ filter: drop-shadow(0 10px 18px rgba(0,0,0,.14)); }
 
-    /* ===== Global stability tint overlay ===== */
+    /* Stability tint overlay */
     .tintOverlay{
       position:fixed; inset:0; pointer-events:none; z-index:9;
       background: transparent;
@@ -265,7 +249,7 @@
 
     .floatingHint{
       position:fixed; bottom:12px; left:12px;
-      max-width:min(620px, calc(100vw - 24px));
+      max-width:min(680px, calc(100vw - 24px));
       z-index:12;
     }
 
@@ -280,7 +264,6 @@
 <body data-theme="dark">
   <div class="tintOverlay" id="tint"></div>
 
-  <!-- HUD -->
   <div class="topbar">
     <div class="card leftCard">
       <div class="row" style="justify-content:space-between">
@@ -291,41 +274,23 @@
       <div class="sep"></div>
 
       <div class="grid2">
-        <div>
-          <div class="k" id="lblState">الدولة</div>
-          <div class="v" id="pName">—</div>
-        </div>
-        <div>
-          <div class="k" id="lblRuler">الحاكم</div>
-          <div class="v" id="rName">—</div>
-        </div>
-        <div>
-          <div class="k" id="lblGold">الذهب</div>
-          <div class="v"><span id="gold">0</span></div>
-        </div>
-        <div>
-          <div class="k" id="lblPop">السكان</div>
-          <div class="v"><span id="pop">0</span></div>
-        </div>
-        <div>
-          <div class="k" id="lblArmy">الجيش</div>
-          <div class="v"><span id="army">0</span></div>
-        </div>
-        <div>
-          <div class="k" id="lblIncome">دخل/دقيقة</div>
-          <div class="v"><span id="inc">0</span></div>
-        </div>
+        <div><div class="k">الدولة</div><div class="v" id="pName">—</div></div>
+        <div><div class="k">الحاكم</div><div class="v" id="rName">—</div></div>
+        <div><div class="k">الذهب</div><div class="v"><span id="gold">0</span></div></div>
+        <div><div class="k">الدخل/دقيقة</div><div class="v"><span id="inc">0</span></div></div>
+        <div><div class="k">الاستقرار</div><div class="v"><span id="stabNum">0</span></div></div>
+        <div><div class="k">المؤن</div><div class="v"><span id="supNum">0</span></div></div>
       </div>
 
       <div class="sep"></div>
 
-      <div class="k" id="lblStab">الاستقرار</div>
+      <div class="k">الاستقرار</div>
       <div class="bar"><div id="stabFill" class="fill ok" style="width:75%"></div></div>
 
-      <div style="margin-top:8px" class="k" id="lblSupply">المؤن</div>
+      <div style="margin-top:8px" class="k">المؤن</div>
       <div class="bar"><div id="supFill" class="fill" style="width:65%"></div></div>
 
-      <div style="margin-top:8px" class="k" id="lblWar">حالة الحرب</div>
+      <div style="margin-top:8px" class="k">الحرب/التوتر</div>
       <div class="bar"><div id="warFill" class="fill ok" style="width:0%"></div></div>
       <div class="small" id="warText">—</div>
 
@@ -334,95 +299,100 @@
 
     <div class="card rightCard">
       <div class="row" style="justify-content:space-between">
-        <h3 id="hdrActions">الأفعال</h3>
+        <h3>التحكم</h3>
         <div class="row">
           <button class="btn" id="btnTheme">🌙/☀️</button>
-          <button class="btn" id="btnLang">AR/EN/TR</button>
           <button class="btn" id="btnZoomReset">↺</button>
+          <button class="btn danger" id="btnRestart">إعادة</button>
         </div>
       </div>
 
-      <div class="small" id="descDifficulty">
-        صعوبة <b>متوسطة→صعبة</b>: البناء يأخذ دقائق حقيقية، الجيش له صيانة وإمداد، والحصار طويل، وخصوم AI يتوسعون ويغيرون عليك.
+      <div class="small">
+        <b>متوازن</b>: تبدأ بجيوش كبيرة (10,000) لكن لها صيانة، والبناء يأخذ دقائق، وAI قريب من قوتك ويقاتل بعضه أحياناً.
       </div>
 
       <div class="sep"></div>
 
-      <div class="k" id="lblMode">وضع الخريطة</div>
+      <div class="k">وضع الخريطة</div>
       <div class="row">
         <button class="btn" id="modeNormal">Normal</button>
         <button class="btn" id="modeClimate">Climate</button>
         <button class="btn" id="modeRelations">Relations</button>
         <button class="btn" id="modeEconomy">Economy</button>
-        <button class="btn" id="modeResources">Resources</button>
       </div>
 
       <div class="sep"></div>
 
-      <div class="k" id="lblSelected">المحدد</div>
+      <div class="k">الإقليم المحدد</div>
       <div class="row" style="justify-content:space-between">
         <div class="v" id="selLabel">—</div>
-        <div class="pill"><span id="lblOwnerMini">مالك</span>: <b><span id="selOwner">—</span></b></div>
+        <div class="pill">مالك: <b><span id="selOwner">—</span></b></div>
       </div>
       <div class="small" id="selInfo">—</div>
 
       <div class="sep"></div>
 
       <div class="actions">
-        <button class="btn primary" id="btnBuildMarket">سوق (5 دقائق)</button>
-        <button class="btn primary" id="btnBuildFarm">مزارع (4 دقائق)</button>
-        <button class="btn primary" id="btnBuildBarracks">ثكنة (6 دقائق)</button>
-        <button class="btn primary" id="btnBuildFort">حصن/أسوار (8 دقائق)</button>
+        <button class="btn primary" id="btnSetCapital">اختيار عاصمة + اسمها</button>
+        <button class="btn primary" id="btnBuildCity">بناء مدينة (6د)</button>
 
-        <button class="btn ok" id="btnRecruit">تجنيد</button>
-        <button class="btn" id="btnEquip">شراء عتاد</button>
-        <button class="btn warn" id="btnCaravan">إنشاء قافلة</button>
-        <button class="btn warn" id="btnFleet">إنشاء سفينة تجارة</button>
+        <button class="btn primary" id="btnBuildVillage">بناء قرية (4د)</button>
+        <button class="btn primary" id="btnBuildSchool">بناء مدرسة (5د)</button>
 
-        <button class="btn danger" id="btnRaid">غارة (Raid)</button>
-        <button class="btn danger" id="btnSiege">حصار (Siege)</button>
+        <button class="btn primary" id="btnBuildMarket">بناء سوق (5د)</button>
+        <button class="btn primary" id="btnBuildFarm">بناء مزارع (4د)</button>
+
+        <button class="btn primary" id="btnBuildBarracks">بناء ثكنة (6د)</button>
+        <button class="btn primary" id="btnBuildFort">بناء حصن (8د)</button>
+
+        <button class="btn primary" id="btnBuildPort">بناء ميناء (7د)</button>
+        <button class="btn ok" id="btnRecruit">تجنيد (يتطلب ثكنات)</button>
+
+        <button class="btn warn" id="btnCaravan">قافلة (بين أراضيك)</button>
+        <button class="btn warn" id="btnImproveRel">تحسين علاقات (+)</button>
+
+        <button class="btn danger" id="btnRaid">غارة</button>
+        <button class="btn danger" id="btnSiege">حصار/ضم</button>
       </div>
 
       <div class="sep"></div>
 
       <div class="row">
-        <button class="btn" id="btnMarket">سوق عالمي</button>
-        <button class="btn" id="btnDiplomacy">علاقات</button>
+        <button class="btn" id="btnDynasty">العائلة/اللامركزية</button>
         <button class="btn" id="btnHelp">مساعدة</button>
-        <button class="btn danger" id="btnRestart">إعادة</button>
       </div>
 
       <div class="sep"></div>
-      <div class="pill" id="goalPill">🎯 هدف صعب: امتلك 40 إقليم + حافظ على الاستقرار فوق 40 لمدة 15 دقيقة</div>
+      <div class="pill">🎯 هدف: امتلك 30 إقليم + استقرار ≥ 40 لمدة 12 دقيقة</div>
     </div>
   </div>
 
-  <div class="card floatingHint" id="floatingHint">
-    <b id="hintTitle">تلميح:</b> <span id="hintText">ابدأ بسوق + مزارع. لا تدخل حصار قبل ما تجهز مؤن وعتاد.</span>
+  <div class="card floatingHint" id="floatingHint" style="display:none">
+    <b id="hintTitle">تلميح:</b> <span id="hintText">—</span>
   </div>
 
   <!-- Founding Modal -->
-  <div class="modalBack" id="modalBack">
+  <div class="modalBack" id="foundBack">
     <div class="modal">
-      <h2 id="foundTitle">تأسيس دولة جديدة</h2>
-      <div class="small" id="foundDesc">
-        اختر اسم الحاكم واسم الدولة. تبدأ بعاصمة + قرية مجاورة. البناء يأخذ وقتًا حقيقيًا.
-      </div>
+      <h2>تأسيس دولة جديدة</h2>
+      <div class="small">اختر اسم الدولة والحاكم + اسم العائلة الحاكمة. (ستبدأ بـ 10,000 جندي)</div>
       <div style="height:10px"></div>
-      <label class="k" id="lblRulerIn">اسم الحاكم</label>
+
+      <label class="k">اسم الدولة (حقيقي/واقعي)</label>
+      <select id="inStatePreset"></select>
+
+      <div style="height:10px"></div>
+      <label class="k">اسم الحاكم</label>
       <input id="inRuler" placeholder="مثال: منصور" />
+
       <div style="height:10px"></div>
-      <label class="k" id="lblStateIn">اسم الدولة</label>
-      <input id="inState" placeholder="مثال: مملكة السواحل" />
+      <label class="k">اسم العائلة الحاكمة</label>
+      <input id="inHouse" placeholder="مثال: آل منصور" />
+
       <div style="height:10px"></div>
-      <label class="k" id="lblColorIn">لون الدولة</label>
-      <select id="inColor">
-        <option value="210">Royal Blue</option>
-        <option value="150">Emerald</option>
-        <option value="30">Gold</option>
-        <option value="330">Purple</option>
-        <option value="10">Crimson</option>
-      </select>
+      <label class="k">لون/شعار (لون)</label>
+      <select id="inColor"></select>
+
       <div style="height:12px"></div>
       <div class="row">
         <button class="btn primary" id="btnStart">ابدأ</button>
@@ -431,59 +401,59 @@
     </div>
   </div>
 
-  <!-- Market Modal -->
-  <div class="modalBack" id="marketBack">
+  <!-- Capital Naming Modal -->
+  <div class="modalBack" id="capBack">
     <div class="modal">
-      <div class="row" style="justify-content:space-between; align-items:center">
-        <h2 id="marketTitle">السوق العالمي</h2>
-        <button class="btn" id="marketClose">✕</button>
-      </div>
-      <div class="small" id="marketDesc">أسعار تتغير. بيع فائضك أو اشترِ موارد للعتاد والبناء. (تجريبي لكن واسع)</div>
-
-      <div class="sep"></div>
-
-      <div class="row">
-        <input id="marketSearch" placeholder="ابحث عن مورد…" />
-        <select id="marketFilter">
-          <option value="all">كل الفئات</option>
-          <option value="food">غذاء</option>
-          <option value="lux">كمالي</option>
-          <option value="metal">معادن</option>
-          <option value="textile">نسيج</option>
-          <option value="spice">بهارات</option>
-          <option value="wood">خشب</option>
-          <option value="military">عسكري</option>
-          <option value="trade">تجارة</option>
-        </select>
-      </div>
-
+      <h2>تسمية العاصمة</h2>
+      <div class="small">اكتب اسم العاصمة (مدينة حقيقية أو اسم دولتِك).</div>
       <div style="height:10px"></div>
-
-      <div class="small" id="marketList" style="max-height:320px; overflow:auto; border:1px solid var(--stroke); border-radius:14px; padding:10px;">
-        —loading—
-      </div>
-
-      <div class="sep"></div>
-
+      <input id="capName" placeholder="مثال: بغداد" />
+      <div style="height:12px"></div>
       <div class="row">
-        <button class="btn ok" id="sellBtn">بيع (10 وحدات)</button>
-        <button class="btn warn" id="buyBtn">شراء (10 وحدات)</button>
-        <div class="pill" id="marketPick">—</div>
+        <button class="btn primary" id="capOk">حفظ</button>
+        <button class="btn" id="capClose">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- Diplomacy Modal -->
-  <div class="modalBack" id="dipBack">
+  <!-- Dynasty Modal -->
+  <div class="modalBack" id="dynBack">
     <div class="modal">
       <div class="row" style="justify-content:space-between; align-items:center">
-        <h2 id="dipTitle">العلاقات</h2>
-        <button class="btn" id="dipClose">✕</button>
+        <h2>العائلة الحاكمة واللامركزية</h2>
+        <button class="btn" id="dynClose">✕</button>
       </div>
-      <div class="small" id="dipDesc">ألوان: أخضر حليف، رمادي محايد، أحمر عدو. تقدر تهدنة/تحالف (تبسيطي).</div>
+      <div class="small">
+        نظام مبسّط: عندك <b>وريث</b> + <b>أبناء</b>. تقدر تعطي إقليم لابنك ليحكمه <b>نيابياً</b> (يقل الدخل منه شوي لكن يزيد الاستقرار).
+      </div>
+
       <div class="sep"></div>
-      <div id="dipList" class="small" style="max-height:320px; overflow:auto; border:1px solid var(--stroke); border-radius:14px; padding:10px;">
+
+      <div class="row">
+        <button class="btn ok" id="btnAddChild">إضافة ابن/ابنة</button>
+        <button class="btn warn" id="btnSetHeir">تعيين ولي عهد</button>
+        <button class="btn primary" id="btnMarry">زواج/تسمية زوج/زوجة</button>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="k">قائمة العائلة</div>
+      <div id="dynList" class="small" style="max-height:260px; overflow:auto; border:1px solid var(--stroke); border-radius:14px; padding:10px;">
         —
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="k">اللامركزية</div>
+      <div class="small">
+        اختر إقليم تابع لك على الخريطة ثم اضغط:
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="btnGrant">منح إقليم لابن كحاكم</button>
+        <select id="grantChild"></select>
+      </div>
+      <div class="small" style="margin-top:8px">
+        التأثير: +استقرار، لكن -دخل ذلك الإقليم بنسبة بسيطة.
       </div>
     </div>
   </div>
@@ -492,21 +462,20 @@
   <div class="modalBack" id="helpBack">
     <div class="modal">
       <div class="row" style="justify-content:space-between; align-items:center">
-        <h2 id="helpTitle">مساعدة سريعة</h2>
+        <h2>مساعدة سريعة</h2>
         <button class="btn" id="helpClose">✕</button>
       </div>
-      <div class="small" id="helpText" style="line-height:1.6">
-        <b>البداية:</b> اختر إقليم حر → سمّي الدولة والحاكم.<br/>
-        <b>اقتصاد:</b> السوق يرفع الذهب، المزارع ترفع المؤن/السكان.<br/>
-        <b>الجيش:</b> له صيانة وإمداد. نقص المؤن = ضعف وهروب.<br/>
-        <b>الغارة:</b> سريعة ونهب، لا تُضم الأرض.<br/>
-        <b>الحصار:</b> طويل. يحتاج مؤن + مدافع/عتاد. سقوط العاصمة = خسارة.<br/>
-        <b>الأوضاع:</b> بدّل وضع الخريطة لمعرفة المناخ/العلاقات/الاقتصاد/الموارد.<br/>
+      <div class="small" style="line-height:1.65">
+        <b>الأداء:</b> تم تقليل اللّاق: عدد الأقاليم مضبوط + تحديثات الرسم مخفّفة، والأسماء تظهر فقط للمدن المهمة.<br/>
+        <b>تأسيس:</b> اضغط إقليم حر → ابدأ. ثم اختر عاصمة وسمّها.<br/>
+        <b>دخل تلقائي:</b> الأسواق/المدن/القرى/الموانئ ترفع دخلك تلقائياً كل فترة.<br/>
+        <b>الثكنات:</b> كل ثكنة ترفع سقف التجنيد (بدونها التجنيد محدود).<br/>
+        <b>الميناء:</b> يتطلب إقليم قريب من البحر (تقريبي).<br/>
+        <b>الحصار:</b> طويل ويحتاج مؤن واستقرار. سقوط عاصمتك = خسارة.<br/>
       </div>
     </div>
   </div>
 
-  <!-- SVG MAP -->
   <svg id="svg" aria-label="world map game">
     <defs>
       <radialGradient id="oceanGrad" cx="35%" cy="20%" r="90%">
@@ -516,7 +485,7 @@
       </radialGradient>
       <clipPath id="landClip"><path id="landClipPath"></path></clipPath>
 
-      <!-- Simple icons -->
+      <!-- icons -->
       <g id="ico-capital">
         <circle r="7" fill="rgba(255,255,255,.92)" stroke="rgba(255,255,255,.75)" stroke-width="1.2"/>
         <path d="M-6 0 L-2 -4 L2 0 L6 -4 L6 4 L-6 4 Z" fill="rgba(255,209,102,.92)" opacity=".95"/>
@@ -533,6 +502,14 @@
         <circle r="4.5" fill="rgba(255,255,255,.82)"/>
         <path d="M-4 2 L0 -2 L4 2 L4 6 L-4 6 Z" fill="rgba(50,208,127,.60)"/>
       </g>
+      <g id="ico-port">
+        <circle r="5.5" fill="rgba(255,255,255,.86)"/>
+        <path d="M-5 2 L5 2 L0 -4 Z" fill="rgba(255,209,102,.70)"/>
+      </g>
+      <g id="ico-school">
+        <circle r="5.5" fill="rgba(255,255,255,.86)"/>
+        <rect x="-5" y="1" width="10" height="7" rx="2" fill="rgba(180,190,255,.55)"/>
+      </g>
     </defs>
   </svg>
 
@@ -541,90 +518,6 @@
     import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
     import {Delaunay} from "https://cdn.jsdelivr.net/npm/d3-delaunay@6/+esm";
 
-    /* =========================
-       I18N (AR/EN/TR)
-       ========================= */
-    const I18N = {
-      ar: {
-        state:"الدولة", ruler:"الحاكم", gold:"الذهب", pop:"السكان", army:"الجيش", income:"دخل/دقيقة",
-        stab:"الاستقرار", supply:"المؤن", war:"حالة الحرب",
-        actions:"الأفعال", mode:"وضع الخريطة", selected:"المحدد", owner:"مالك",
-        startHint:"اضغط على الخريطة لاختيار إقليم بداية (حر)",
-        founded:(s,r)=>`🏛️ تأسست "${s}" بقيادة "${r}".`,
-        needOwned:"⚠️ لازم تختار إقليم تابع لك.",
-        buildQueued:(b,mins)=>`🏗️ بدأ بناء ${b} (${mins} دقائق).`,
-        buildDone:(b)=>`✅ اكتمل بناء ${b}.`,
-        siegeStart:"🏰 بدأ الحصار… هذا يأخذ وقتًا.",
-        raidDone:(g)=>`🔥 غارة: +${g} ذهب (نهب).`,
-        conquerDone:"🏴‍☠️ سقط الإقليم وتم ضمّه!",
-        conquerFail:"❌ فشل الهجوم. خسائر.",
-        caravanCreated:"🐪 تم إنشاء قافلة.",
-        shipCreated:"⛵ تم إنشاء سفينة تجارة.",
-        loseCapital:"💀 خسرت! سقطت العاصمة.",
-        loseBankrupt:"💀 خسرت! الإفلاس طال كثيرًا.",
-        loseCollapse:"💀 خسرت! الاستقرار انهار.",
-        win:"🏆 فزت! سيطرة قوية عالمية.",
-        market:"السوق العالمي",
-        diplomacy:"العلاقات",
-        help:"مساعدة",
-      },
-      en: {
-        state:"State", ruler:"Ruler", gold:"Gold", pop:"Population", army:"Army", income:"Income/min",
-        stab:"Stability", supply:"Supply", war:"War status",
-        actions:"Actions", mode:"Map mode", selected:"Selected", owner:"Owner",
-        startHint:"Click the map to choose a free starting province",
-        founded:(s,r)=>`🏛️ Founded "${s}" led by "${r}".`,
-        needOwned:"⚠️ Select your own province first.",
-        buildQueued:(b,mins)=>`🏗️ Building ${b} (${mins} min).`,
-        buildDone:(b)=>`✅ ${b} completed.`,
-        siegeStart:"🏰 Siege started… it takes time.",
-        raidDone:(g)=>`🔥 Raid: +${g} gold.`,
-        conquerDone:"🏴‍☠️ Province captured!",
-        conquerFail:"❌ Attack failed. Casualties.",
-        caravanCreated:"🐪 Caravan created.",
-        shipCreated:"⛵ Trade ship created.",
-        loseCapital:"💀 Defeat! Capital fell.",
-        loseBankrupt:"💀 Defeat! Bankruptcy lasted too long.",
-        loseCollapse:"💀 Defeat! Stability collapsed.",
-        win:"🏆 Victory! Global dominance.",
-        market:"World Market",
-        diplomacy:"Diplomacy",
-        help:"Help",
-      },
-      tr: {
-        state:"Devlet", ruler:"Hükümdar", gold:"Altın", pop:"Nüfus", army:"Ordu", income:"Gelir/dk",
-        stab:"İstikrar", supply:"Erzak", war:"Savaş durumu",
-        actions:"Eylemler", mode:"Harita modu", selected:"Seçili", owner:"Sahip",
-        startHint:"Başlangıç için boş bir bölgeye tıkla",
-        founded:(s,r)=>`🏛️ "${s}" kuruldu. Lider: "${r}".`,
-        needOwned:"⚠️ Önce kendi bölgeni seç.",
-        buildQueued:(b,mins)=>`🏗️ ${b} inşa ediliyor (${mins} dk).`,
-        buildDone:(b)=>`✅ ${b} tamamlandı.`,
-        siegeStart:"🏰 Kuşatma başladı… zaman alır.",
-        raidDone:(g)=>`🔥 Baskın: +${g} altın.`,
-        conquerDone:"🏴‍☠️ Bölge ele geçirildi!",
-        conquerFail:"❌ Saldırı başarısız.",
-        caravanCreated:"🐪 Kervan kuruldu.",
-        shipCreated:"⛵ Ticaret gemisi kuruldu.",
-        loseCapital:"💀 Yenilgi! Başkent düştü.",
-        loseBankrupt:"💀 Yenilgi! İflas uzadı.",
-        loseCollapse:"💀 Yenilgi! İstikrar çöktü.",
-        win:"🏆 Zafer! Küresel hakimiyet.",
-        market:"Dünya Pazarı",
-        diplomacy:"Diplomasi",
-        help:"Yardım",
-      }
-    };
-
-    let LANG = "ar";
-    const t = (k, ...args) => {
-      const v = I18N[LANG][k];
-      return (typeof v === "function") ? v(...args) : v;
-    };
-
-    /* =========================
-       UI Helpers
-       ========================= */
     const $ = (id)=>document.getElementById(id);
     const ui = {
       status: $("status"),
@@ -632,9 +525,9 @@
       pName: $("pName"),
       rName: $("rName"),
       gold: $("gold"),
-      pop: $("pop"),
-      army: $("army"),
       inc: $("inc"),
+      stabNum: $("stabNum"),
+      supNum: $("supNum"),
       stabFill: $("stabFill"),
       supFill: $("supFill"),
       warFill: $("warFill"),
@@ -647,19 +540,6 @@
       hintBox: $("floatingHint"),
       hintTitle: $("hintTitle"),
       hintText: $("hintText"),
-      goalPill: $("goalPill"),
-    };
-
-    const labels = {
-      lblState: $("lblState"), lblRuler: $("lblRuler"), lblGold: $("lblGold"), lblPop: $("lblPop"),
-      lblArmy: $("lblArmy"), lblIncome: $("lblIncome"), lblStab: $("lblStab"), lblSupply: $("lblSupply"),
-      lblWar: $("lblWar"), hdrActions: $("hdrActions"), descDifficulty: $("descDifficulty"),
-      lblMode: $("lblMode"), lblSelected: $("lblSelected"), lblOwnerMini: $("lblOwnerMini"),
-      foundTitle: $("foundTitle"), foundDesc: $("foundDesc"),
-      lblRulerIn: $("lblRulerIn"), lblStateIn: $("lblStateIn"), lblColorIn: $("lblColorIn"),
-      marketTitle: $("marketTitle"), marketDesc: $("marketDesc"),
-      dipTitle: $("dipTitle"), dipDesc: $("dipDesc"),
-      helpTitle: $("helpTitle"), helpText: $("helpText"),
     };
 
     function log(msg){
@@ -668,57 +548,173 @@
       ui.log.prepend(div);
     }
     function setStatus(s){ ui.status.textContent = s; }
-
     function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
     function hsla(h,s,l,a=0.75){ return `hsla(${h} ${s}% ${l}% / ${a})`; }
+    function now(){ return Date.now(); }
 
-    /* =========================
-       Theme & Language
-       ========================= */
-    function applyLanguage(){
-      labels.lblState.textContent = t("state");
-      labels.lblRuler.textContent = t("ruler");
-      labels.lblGold.textContent = t("gold");
-      labels.lblPop.textContent = t("pop");
-      labels.lblArmy.textContent = t("army");
-      labels.lblIncome.textContent = t("income");
-      labels.lblStab.textContent = t("stab");
-      labels.lblSupply.textContent = t("supply");
-      labels.lblWar.textContent = t("war");
-      labels.hdrActions.textContent = t("actions");
-      labels.lblMode.textContent = t("mode");
-      labels.lblSelected.textContent = t("selected");
-      labels.lblOwnerMini.textContent = t("owner");
-      labels.marketTitle.textContent = t("market");
-      labels.dipTitle.textContent = t("diplomacy");
-      labels.helpTitle.textContent = t("help");
-      setStatus(t("startHint"));
+    /* ========= Performance knobs (reduced lag) ========= */
+    const CFG = {
+      tickMs: 1000,
+      econEvery: 5,
+      aiEvery: 7,
+      maxProvinces: 720,       // أصغر من قبل لتخفيف اللّاق
+      buildTimes: {
+        market: 5*60, farm: 4*60, barracks: 6*60, fort: 8*60,
+        city: 6*60, village: 4*60, school: 5*60, port: 7*60,
+      },
+      costs: {
+        market: 120, farm: 90, barracks: 160, fort: 220,
+        city: 200, village: 120, school: 160, port: 180,
+      },
+      baseIncomePM: 40,                 // توازن (مش صعب)
+      upkeepPerSoldierPerMin: 0.0009,   // لأن الجيش بالأعداد الكبيرة
+      supplyUsePerSoldierPerMin: 0.0007,
+      stabilityExpandPenalty: 0.35,
+      revoltBase: 0.006,
+      siegeBaseSeconds: 210,
+      siegeFortBonusSeconds: 220,
+      bankruptLoseSeconds: 240,
+      collapseLoseSeconds: 180,
+      winMinSeconds: 12*60,
+      winProvinces: 30,
+      winMinStab: 40,
+    };
+
+    /* ========= Real countries list (global, ~1600-ish flavor) ========= */
+    const REAL_COUNTRIES = [
+      "Ottoman Empire","Safavid Persia","Mughal Empire","Spanish Empire","Portuguese Empire","Kingdom of France",
+      "Kingdom of England","Dutch Republic","Holy Roman Empire","Russian Tsardom","Swedish Empire","Polish–Lithuanian Commonwealth",
+      "Venetian Republic","Papal States","Kingdom of Denmark–Norway","Habsburg Austria","Kingdom of Scotland",
+      "Moroccan Sultanate","Regency of Algiers","Tunis Beylik","Mamluk Remnants","Ethiopian Empire","Kongo Kingdom",
+      "Songhai Legacy","Ashanti Confederacy","Kingdom of Benin","Sultanate of Aceh","Ayutthaya Kingdom",
+      "Qing Frontier State","Ming Loyalists","Tokugawa Shogunate","Joseon Korea","Sultanate of Brunei",
+      "Inca Remnants","Aztec Remnants","New Spain (Viceroyalty)","Brazil Colony","Muscovy Frontiers"
+    ];
+
+    /* ========= Color palette / emblems ========= */
+    const PALETTE = [
+      {name:"Royal Blue", hue:210, emblem:"🦅"},
+      {name:"Emerald", hue:150, emblem:"🦁"},
+      {name:"Gold", hue:35, emblem:"☀️"},
+      {name:"Purple", hue:300, emblem:"👑"},
+      {name:"Crimson", hue:10, emblem:"⚔️"},
+      {name:"Teal", hue:175, emblem:"🌊"},
+      {name:"Amber", hue:45, emblem:"🏛️"},
+      {name:"Indigo", hue:250, emblem:"🐉"},
+      {name:"Rose", hue:340, emblem:"🌹"},
+      {name:"Slate", hue:220, emblem:"🛡️"},
+    ];
+
+    /* ========= Major cities ONLY (reduced list) ========= */
+    const MAJOR_CITIES = [
+      {name:"London", lon:-0.1276, lat:51.5072},
+      {name:"Paris", lon:2.3522, lat:48.8566},
+      {name:"Madrid", lon:-3.7038, lat:40.4168},
+      {name:"Lisbon", lon:-9.1393, lat:38.7223},
+      {name:"Rome", lon:12.4964, lat:41.9028},
+      {name:"Vienna", lon:16.3738, lat:48.2082},
+      {name:"Istanbul", lon:28.9784, lat:41.0082},
+      {name:"Cairo", lon:31.2357, lat:30.0444},
+      {name:"Damascus", lon:36.2765, lat:33.5138},
+      {name:"Baghdad", lon:44.3661, lat:33.3152},
+      {name:"Mecca", lon:39.8579, lat:21.3891},
+      {name:"Tehran", lon:51.3890, lat:35.6892},
+      {name:"Isfahan", lon:51.6776, lat:32.6546},
+      {name:"Delhi", lon:77.1025, lat:28.7041},
+      {name:"Lahore", lon:74.3587, lat:31.5204},
+      {name:"Kabul", lon:69.2075, lat:34.5553},
+      {name:"Mumbai", lon:72.8777, lat:19.0760},
+      {name:"Bangkok", lon:100.5018, lat:13.7563},
+      {name:"Jakarta", lon:106.8456, lat:-6.2088},
+      {name:"Manila", lon:120.9842, lat:14.5995},
+      {name:"Beijing", lon:116.4074, lat:39.9042},
+      {name:"Shanghai", lon:121.4737, lat:31.2304},
+      {name:"Guangzhou", lon:113.2644, lat:23.1291},
+      {name:"Seoul", lon:126.9780, lat:37.5665},
+      {name:"Tokyo", lon:139.6917, lat:35.6895},
+      {name:"Moscow", lon:37.6173, lat:55.7558},
+      {name:"New York", lon:-74.0060, lat:40.7128},
+      {name:"Mexico City", lon:-99.1332, lat:19.4326},
+      {name:"Lima", lon:-77.0428, lat:-12.0464},
+      {name:"Rio de Janeiro", lon:-43.1729, lat:-22.9068},
+      {name:"Buenos Aires", lon:-58.3816, lat:-34.6037},
+      {name:"Cape Town", lon:18.4241, lat:-33.9249},
+      {name:"Lagos", lon:3.3792, lat:6.5244},
+      {name:"Addis Ababa", lon:38.7578, lat:8.9806},
+    ];
+
+    /* ========= Resources (compact but many enough) ========= */
+    const RES = (() => {
+      const mk = (id, name, base)=>({id,name,base});
+      const list = [
+        mk("wheat","Wheat / قمح",8), mk("rice","Rice / أرز",9), mk("dates","Dates / تمر",10), mk("fish","Fish / سمك",8),
+        mk("salt","Salt / ملح",9), mk("olive","Olives / زيتون",11), mk("oil","Oil / زيت",14), mk("sugar","Sugar / سكر",16),
+        mk("coffee","Coffee / قهوة",15), mk("tea","Tea / شاي",14), mk("cotton","Cotton / قطن",18), mk("silk","Silk / حرير",30),
+        mk("wool","Wool / صوف",14), mk("linen","Linen / كتان",16), mk("timber","Timber / أخشاب",12),
+        mk("iron","Iron / حديد",16), mk("copper","Copper / نحاس",18), mk("silver","Silver / فضة",30), mk("goldOre","Gold Ore / خام ذهب",34),
+        mk("pepper","Pepper / فلفل",22), mk("cinnamon","Cinnamon / قرفة",24), mk("clove","Clove / قرنفل",26),
+        mk("pearls","Pearls / لؤلؤ",38), mk("horses","Horses / خيول",22),
+        mk("gunpowder","Gunpowder / بارود",28), mk("arms","Arms / أسلحة",26), mk("cannons","Cannons / مدافع",44),
+        // extra
+        ...Array.from({length:40}).map((_,i)=>mk(`x${i+1}`,`Commodity ${i+1} / مورد ${i+1}`, 8+(i%9)*3))
+      ];
+      const byId = new Map(list.map(x=>[x.id,x]));
+      return {list, byId};
+    })();
+
+    const Market = {
+      prices: new Map(),
+      init(){
+        for(const r of RES.list){
+          const noise = 0.85 + Math.random()*0.35;
+          this.prices.set(r.id, Math.round(r.base*noise));
+        }
+      },
+      step(){
+        for(const r of RES.list){
+          const p = this.prices.get(r.id) ?? r.base;
+          const drift = (Math.random()-0.5)*0.6;
+          const shock = (Math.random()<0.01) ? (Math.random()-0.5)*8 : 0;
+          const np = clamp(Math.round(p + drift + shock), Math.max(1, Math.round(r.base*0.4)), Math.round(r.base*2.2));
+          this.prices.set(r.id, np);
+        }
+      }
+    };
+
+    /* ========= Climate (simple) ========= */
+    function climateByLatLon(lon, lat){
+      const a = Math.abs(lat);
+      if(a < 12) return "tropical";
+      if(a < 23) return "savanna";
+      if(a < 35){
+        const desert = (
+          (lon>-20 && lon<65 && lat>10 && lat<33) ||
+          (lon>110 && lon<155 && lat>-35 && lat<-12) ||
+          (lon>-120 && lon<-95 && lat>20 && lat<38)
+        );
+        return desert ? "desert" : "mediterranean";
+      }
+      if(a < 55) return "temperate";
+      return "cold";
+    }
+    function climateColor(c){
+      switch(c){
+        case "tropical": return "rgba(50,208,127,.42)";
+        case "savanna": return "rgba(255,209,102,.32)";
+        case "desert": return "rgba(255,209,102,.50)";
+        case "mediterranean": return "rgba(122,162,255,.20)";
+        case "temperate": return "rgba(122,162,255,.28)";
+        case "cold": return "rgba(200,210,255,.22)";
+      }
+      return "rgba(255,255,255,.12)";
     }
 
-    $("btnTheme").onclick = ()=>{
-      const b = document.body;
-      b.dataset.theme = (b.dataset.theme === "dark") ? "light" : "dark";
-      // nothing else; CSS variables do the work
-    };
-
-    $("btnLang").onclick = ()=>{
-      LANG = (LANG === "ar") ? "en" : (LANG === "en") ? "tr" : "ar";
-      document.documentElement.dir = (LANG === "ar") ? "rtl" : "ltr";
-      applyLanguage();
-      refreshSelectionUI();
-      refreshDiplomacyUI();
-      renderMarketList();
-    };
-
-    /* =========================
-       SVG / Map Layers
-       ========================= */
+    /* ========= SVG layers ========= */
     const svg = d3.select("#svg");
     const root = svg.append("g");
     const ocean = root.append("path").attr("class","ocean");
     const grat  = root.append("path").attr("class","graticule");
     const landP = root.append("path").attr("class","land");
-
     const riversP = root.append("path").attr("class","rivers");
     const lakesP  = root.append("path").attr("class","lakes");
 
@@ -741,9 +737,10 @@
 
     const zoom = d3.zoom()
       .scaleExtent([1, 10])
-      .on("zoom", (event)=> root.attr("transform", event.transform));
+      .on("zoom", (event)=> root.attr("transform", event.transform))
+      .on("end", ()=> refreshMajorCityLabels());  // ✅ refresh only on zoom end (performance)
     svg.call(zoom);
-    $("btnZoomReset").onclick = ()=> svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+    $("btnZoomReset").onclick = ()=> svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
 
     function fit(){
       projection.fitExtent([[18,18],[W()-18,H()-18]], {type:"Sphere"});
@@ -753,246 +750,91 @@
       if(world.land) landClipPath.attr("d", geoPath(world.land));
       if(world.rivers) riversP.attr("d", geoPath(world.rivers));
       if(world.lakes) lakesP.attr("d", geoPath(world.lakes));
-      refreshProvincePaths();
-      refreshCityLabels();
-      refreshIcons();
     }
 
-    /* =========================
-       World Data (Natural Earth TopoJSON in gist)
-       - includes countries, rivers, lakes
-       ========================= */
-    const world = {
-      land:null, rivers:null, lakes:null, countries:null,
-      // Cities: embedded major-city list (real names, real coords)
-      cities: [
-        {name:"London", lon:-0.1276, lat:51.5072},
-        {name:"Paris", lon:2.3522, lat:48.8566},
-        {name:"Madrid", lon:-3.7038, lat:40.4168},
-        {name:"Lisbon", lon:-9.1393, lat:38.7223},
-        {name:"Rome", lon:12.4964, lat:41.9028},
-        {name:"Vienna", lon:16.3738, lat:48.2082},
-        {name:"Istanbul", lon:28.9784, lat:41.0082},
-        {name:"Cairo", lon:31.2357, lat:30.0444},
-        {name:"Tunis", lon:10.1815, lat:36.8065},
-        {name:"Algiers", lon:3.0588, lat:36.7538},
-        {name:"Rabat", lon:-6.8498, lat:34.0209},
-        {name:"Tripoli", lon:13.1913, lat:32.8872},
-        {name:"Damascus", lon:36.2765, lat:33.5138},
-        {name:"Baghdad", lon:44.3661, lat:33.3152},
-        {name:"Basra", lon:47.7804, lat:30.5085},
-        {name:"Tehran", lon:51.3890, lat:35.6892},
-        {name:"Isfahan", lon:51.6776, lat:32.6546},
-        {name:"Mecca", lon:39.8579, lat:21.3891},
-        {name:"Medina", lon:39.5692, lat:24.5247},
-        {name:"Muscat", lon:58.4059, lat:23.5880},
-        {name:"Dubai", lon:55.2708, lat:25.2048},
-        {name:"Delhi", lon:77.1025, lat:28.7041},
-        {name:"Lahore", lon:74.3587, lat:31.5204},
-        {name:"Kabul", lon:69.2075, lat:34.5553},
-        {name:"Kolkata", lon:88.3639, lat:22.5726},
-        {name:"Mumbai", lon:72.8777, lat:19.0760},
-        {name:"Goa", lon:73.8278, lat:15.4909},
-        {name:"Bangkok", lon:100.5018, lat:13.7563},
-        {name:"Hanoi", lon:105.8342, lat:21.0278},
-        {name:"Jakarta", lon:106.8456, lat:-6.2088},
-        {name:"Manila", lon:120.9842, lat:14.5995},
-        {name:"Beijing", lon:116.4074, lat:39.9042},
-        {name:"Shanghai", lon:121.4737, lat:31.2304},
-        {name:"Guangzhou", lon:113.2644, lat:23.1291},
-        {name:"Seoul", lon:126.9780, lat:37.5665},
-        {name:"Tokyo", lon:139.6917, lat:35.6895},
-        {name:"Osaka", lon:135.5023, lat:34.6937},
-        {name:"Moscow", lon:37.6173, lat:55.7558},
-        {name:"St Petersburg", lon:30.3351, lat:59.9343},
-        {name:"Kazan", lon:49.1221, lat:55.7903},
-        {name:"New York", lon:-74.0060, lat:40.7128},
-        {name:"Mexico City", lon:-99.1332, lat:19.4326},
-        {name:"Havana", lon:-82.3666, lat:23.1136},
-        {name:"Lima", lon:-77.0428, lat:-12.0464},
-        {name:"Rio de Janeiro", lon:-43.1729, lat:-22.9068},
-        {name:"Buenos Aires", lon:-58.3816, lat:-34.6037},
-        {name:"Cape Town", lon:18.4241, lat:-33.9249},
-        {name:"Lagos", lon:3.3792, lat:6.5244},
-        {name:"Accra", lon:-0.1869, lat:5.6037},
-        {name:"Addis Ababa", lon:38.7578, lat:8.9806},
-      ]
-    };
+    /* ========= World topojson (same gist approach) ========= */
+    const world = { land:null, rivers:null, lakes:null };
 
-    /* =========================
-       Provinces + Game Data
-       ========================= */
-    let provinces = []; // {id, poly, centroidXY, lonlat, neighbors:Set, owner, kind, climate, resources, buildings, buildQueue, fort, capital, siege, cityTag, name}
+    /* ========= Game state ========= */
+    let provinces = []; // {id, poly, centroidXY, lonlat, neighbors:Set, owner, climate, resources, buildings, buildQueue, capitalName, capital, governorChildId, coastal}
     let selectedProv = null;
 
-    // Map mode
-    let MAP_MODE = "normal"; // normal | climate | relations | economy | resources
-
-    // Owners: player + AIs
-    const states = new Map(); // id -> {id,name,hue,isPlayer,ruler, gold,pop,army,gear,stab,supply,incomePM, debtSec, warHeat, stock:Map(resource->qty), relations:Map(owner->-1..1)}
+    const states = new Map(); // id -> {id,name,hue,emblem,isPlayer, ruler, house, spouse, heirId, children[], gold,incomePM, stab,supply, warHeat, army, recruitCap, stock:Map, relations:Map}
     let playerId = null;
+    let gameStartAt = null;
 
-    // Difficulty (global ~1600, longer play)
-    const CFG = {
-      tickMs: 1000,               // 1s tick
-      econEvery: 5,               // compute econ every 5s
-      aiEvery: 6,                 // AI decision every 6s
-      maxProvinces: 1050,         // smaller provinces (more)
-      upkeepPerSoldierPerMin: 0.08, // harder
-      supplyUsePerSoldierPerMin: 0.05,
-      stabilityExpandPenalty: 0.65, // per captured province
-      revoltBase: 0.010,          // base revolt probability per 10s in low stability
-      siegeBaseSeconds: 240,      // minimum siege duration (4 min)
-      siegeFortBonusSeconds: 240, // fortress extends siege
-      buildTimes: {               // real minutes
-        market: 5*60,
-        farm: 4*60,
-        barracks: 6*60,
-        fort: 8*60,
-      },
-      caravanSpeedPxPerSec: 85,   // movement speed in screen-space
-      shipSpeedPxPerSec: 110,
-      bankruptLoseSeconds: 180,   // 3 minutes negative gold => lose
-      collapseLoseSeconds: 140,   // 2:20 stability 0 => lose
-      winMinSeconds: 15*60,
-      winProvinces: 40,
-      winMinStab: 40,
-    };
+    let MAP_MODE = "normal";
 
-    /* =========================
-       Resources (Big list, categorized)
-       - huge but UI remains usable with search/filter
-       ========================= */
-    const RES = (() => {
-      const mk = (id, name, cat, basePrice, tags=[])=>({id,name,cat,basePrice,tags});
-      const list = [
-        // Food
-        mk("wheat","Wheat / قمح","food",8), mk("rice","Rice / أرز","food",9), mk("barley","Barley / شعير","food",7),
-        mk("maize","Maize / ذرة","food",7), mk("dates","Dates / تمر","food",10), mk("fish","Fish / سمك","food",8),
-        mk("salt","Salt / ملح","food",9), mk("olive","Olives / زيتون","food",11), mk("oil","Olive Oil / زيت","food",14),
-        mk("sugar","Sugar / سكر","food",16), mk("tea","Tea / شاي","food",14), mk("coffee","Coffee / قهوة","food",15),
-        mk("cocoa","Cocoa / كاكاو","food",18), mk("wine","Wine / نبيذ","food",14), mk("livestock","Livestock / ماشية","food",13),
+    /* ========= Populate founding presets ========= */
+    const inStatePreset = $("inStatePreset");
+    const inColor = $("inColor");
+    function fillPresets(){
+      inStatePreset.innerHTML = REAL_COUNTRIES.map(x=>`<option value="${x}">${x}</option>`).join("");
+      inColor.innerHTML = PALETTE.map((p,i)=>`<option value="${i}">${p.name} ${p.emblem}</option>`).join("");
+    }
+    fillPresets();
 
-        // Spices & Lux
-        mk("pepper","Pepper / فلفل","spice",22), mk("cinnamon","Cinnamon / قرفة","spice",24),
-        mk("clove","Clove / قرنفل","spice",26), mk("nutmeg","Nutmeg / جوزة الطيب","spice",28),
-        mk("saffron","Saffron / زعفران","spice",35),
-        mk("silk","Silk / حرير","lux",30), mk("porcelain","Porcelain / خزف","lux",26),
-        mk("jewelry","Jewelry / مجوهرات","lux",40), mk("perfume","Perfume / عطور","lux",32),
-        mk("amber","Amber / كهرمان","lux",24), mk("fur","Fur / فراء","lux",21),
-        mk("pearls","Pearls / لؤلؤ","lux",38),
+    /* ========= Helpers ========= */
+    function fmtClock(ms){
+      const s = Math.floor(ms/1000);
+      const hh = String(Math.floor(s/3600)).padStart(2,"0");
+      const mm = String(Math.floor((s%3600)/60)).padStart(2,"0");
+      const ss = String(s%60).padStart(2,"0");
+      return `${hh}:${mm}:${ss}`;
+    }
+    function ownedCount(ownerId){
+      let c=0; for(const p of provinces) if(p.owner===ownerId) c++;
+      return c;
+    }
+    function ownerFill(ownerId){
+      const st = states.get(ownerId);
+      if(!st) return "rgba(255,255,255,.12)";
+      return hsla(st.hue, 85, st.isPlayer?58:52, st.isPlayer?0.55:0.40);
+    }
 
-        // Textiles
-        mk("cotton","Cotton / قطن","textile",18), mk("linen","Linen / كتان","textile",16),
-        mk("wool","Wool / صوف","textile",14), mk("cloth","Cloth / قماش","textile",20),
-        mk("dye","Dye / صبغة","textile",22), mk("leather","Leather / جلد","textile",17),
-
-        // Metals & Materials
-        mk("iron","Iron / حديد","metal",16), mk("copper","Copper / نحاس","metal",18),
-        mk("tin","Tin / قصدير","metal",19), mk("silver","Silver / فضة","metal",30),
-        mk("goldOre","Gold Ore / خام ذهب","metal",34), mk("stone","Stone / حجر","metal",10),
-        mk("marble","Marble / رخام","metal",18),
-
-        // Wood & Naval
-        mk("timber","Timber / أخشاب","wood",12), mk("tar","Tar / قطران","wood",14),
-        mk("hemp","Hemp / قنب (حبال)","wood",15), mk("sails","Sails / أشرعة","wood",18),
-
-        // Trade (services / valuables)
-        mk("paper","Paper / ورق","trade",14), mk("books","Books / كتب","trade",20),
-        mk("glass","Glass / زجاج","trade",16), mk("tools","Tools / أدوات","trade",18),
-        mk("horses","Horses / خيول","trade",22),
-
-        // Military
-        mk("arms","Arms / أسلحة","military",26), mk("armor","Armor / دروع","military",24),
-        mk("gunpowder","Gunpowder / بارود","military",28), mk("muskets","Muskets / بنادق","military",34),
-        mk("cannons","Cannons / مدافع","military",44), mk("ammo","Ammunition / ذخيرة","military",22),
-
-        // Extra “big list” boosters (adds breadth)
-        ...Array.from({length:60}).map((_,i)=>{
-          const cats = ["food","lux","metal","textile","spice","wood","military","trade"];
-          const cat = cats[i % cats.length];
-          const id = `x${i+1}`;
-          const name = [
-            "Herbs","Incense","Honey","Cheese","Dried Fruit","Spirits","Carpets","Ivory",
-            "Bronze","Brass","Coal","Sulfur","Gems","Opium","Tobacco","Rum","Citrus","Cedar",
-            "Pitch","Rope","Canvas","Ink","Maps","Clocks","Ceramics","Spices Mix","Swords",
-            "Pikes","Bows","Crossbows","Shields","Helmets","Chainmail","Steel","Lead","Zinc",
-            "Quartz","Granite","Clay","Bricks","Planks","Resin","Ambergris","Pearl Dust",
-            "Sandalwood","Tea Bricks","Salted Fish","Rice Wine","Olive Soap","Dyestuffs",
-            "Woad","Indigo","Silk Thread","Cotton Yarn","Linen Thread","Wool Yarn",
-            "Harness","Saddles","Stirrups","Tack"
-          ][i] || ("Commodity "+(i+1));
-          const base = 8 + (i%9)*3 + (cat==="military"?10:0) + (cat==="lux"?12:0) + (cat==="spice"?8:0);
-          return mk(id, `${name} / مورد ${i+1}`, cat, base);
-        })
+    /* ========= Coastal estimate (fast heuristic) ========= */
+    function isCoastal(lon, lat){
+      // if land contains point but nearby offset is water => coastal
+      if(!world.land) return false;
+      if(!d3.geoContains(world.land,[lon,lat])) return false;
+      const offs = [
+        [lon+1.2, lat], [lon-1.2, lat], [lon, lat+1.2], [lon, lat-1.2]
       ];
-      const byId = new Map(list.map(x=>[x.id,x]));
-      return {list, byId};
-    })();
-
-    // Market prices (dynamic)
-    const Market = {
-      prices: new Map(),
-      init(){
-        for(const r of RES.list){
-          const noise = 0.85 + Math.random()*0.35;
-          this.prices.set(r.id, Math.round(r.basePrice * noise));
-        }
-      },
-      step(){
-        // gentle drift
-        for(const r of RES.list){
-          const p = this.prices.get(r.id) ?? r.basePrice;
-          const drift = (Math.random()-0.5) * 0.7;
-          const shock = (Math.random()<0.01) ? (Math.random()-0.5)*10 : 0;
-          const np = clamp(Math.round(p + drift + shock), Math.max(1, Math.round(r.basePrice*0.4)), Math.round(r.basePrice*2.4));
-          this.prices.set(r.id, np);
-        }
-      }
-    };
-
-    /* =========================
-       Climate model (simple but global)
-       ========================= */
-    function climateByLatLon(lon, lat){
-      const a = Math.abs(lat);
-      // rough climates
-      if(a < 12) return "tropical";
-      if(a < 23) return "savanna";
-      if(a < 35){
-        // desert belt areas
-        // rough: MENA, Australia, SW US, Atacama
-        const desert = (
-          (lon>-20 && lon<65 && lat>10 && lat<33) ||
-          (lon>110 && lon<155 && lat>-35 && lat<-12) ||
-          (lon>-120 && lon<-95 && lat>20 && lat<38) ||
-          (lon>-80 && lon<-65 && lat>-30 && lat<-15)
-        );
-        return desert ? "desert" : "mediterranean";
-      }
-      if(a < 55) return "temperate";
-      return "cold";
+      return offs.some(p=>!d3.geoContains(world.land,p));
     }
 
-    function climateColor(c){
-      switch(c){
-        case "tropical": return "rgba(50,208,127,.45)";
-        case "savanna": return "rgba(255,209,102,.35)";
-        case "desert": return "rgba(255,209,102,.55)";
-        case "mediterranean": return "rgba(122,162,255,.25)";
-        case "temperate": return "rgba(122,162,255,.32)";
-        case "cold": return "rgba(200,210,255,.28)";
+    function resourcesByLocation(lon, lat, climate){
+      const pick = new Set(["wheat","timber","tools","salt"]);
+      const gulf = (lon>44 && lon<60 && lat>18 && lat<32);
+      const india = (lon>68 && lon<92 && lat>6 && lat<28);
+      const seasia= (lon>95 && lon<125 && lat>-6 && lat<20);
+      const europe= (lon>-12 && lon<30 && lat>40 && lat<58);
+
+      if(climate==="tropical"){ ["sugar","coffee","rice","pepper","cinnamon"].forEach(x=>pick.add(x)); }
+      if(climate==="savanna"){ ["horses","goldOre","cotton"].forEach(x=>pick.add(x)); }
+      if(climate==="desert"){ ["dates","salt","horses"].forEach(x=>pick.add(x)); }
+      if(climate==="mediterranean"){ ["olive","oil","wine","linen"].forEach(x=>pick.add(x)); }
+      if(climate==="temperate"){ ["wool","iron","cotton"].forEach(x=>pick.add(x)); }
+      if(climate==="cold"){ ["fur","timber","iron","fish"].forEach(x=>pick.add(x)); }
+
+      if(gulf){ ["pearls","dates","fish","salt"].forEach(x=>pick.add(x)); }
+      if(india){ ["pepper","cinnamon","cotton","sugar","tea"].forEach(x=>pick.add(x)); }
+      if(seasia){ ["clove","pepper","timber","silk"].forEach(x=>pick.add(x)); }
+      if(europe){ ["iron","wool","linen","silver"].forEach(x=>pick.add(x)); }
+
+      // sprinkle extras
+      for(let i=0;i<6;i++){
+        const r = RES.list[(Math.random()*RES.list.length)|0].id;
+        pick.add(r);
       }
-      return "rgba(255,255,255,.12)";
+      return Array.from(pick).filter(id=>RES.byId.has(id)).slice(0, 14);
     }
 
-    /* =========================
-       Province generation (Voronoi on land)
-       ========================= */
+    /* ========= Provinces generation ========= */
     function randomOnLand(n){
       const pts = [];
       let tries = 0;
-      while(pts.length < n && tries < n*150){
+      while(pts.length < n && tries < n*140){
         tries++;
         const lon = -180 + Math.random()*360;
         const lat = -58 + Math.random()*135;
@@ -1004,101 +846,41 @@
       return pts;
     }
 
-    function provinceNameFromNearestCity(lon,lat){
-      // nearest major city name (real)
-      let best = null, bestD = 1e9;
-      for(const c of world.cities){
-        const d = (c.lon-lon)*(c.lon-lon) + (c.lat-lat)*(c.lat-lat);
-        if(d < bestD){ bestD = d; best = c; }
-      }
-      return best ? best.name : `Province`;
-    }
-
-    function resourcesByLocation(lon, lat, climate){
-      // choose 6–12 resources based on climate + some regional overrides
-      const pick = new Set();
-
-      const isCoastalBias = (Math.random()<0.25); // no coastline test here; simplified
-      const isGulf = (lon > 44 && lon < 60 && lat > 18 && lat < 32);
-      const isIndia = (lon > 68 && lon < 92 && lat > 6 && lat < 28);
-      const isSEAsia = (lon > 95 && lon < 125 && lat > -6 && lat < 20);
-      const isEurope = (lon > -12 && lon < 30 && lat > 40 && lat < 58);
-      const isChina = (lon > 95 && lon < 125 && lat > 20 && lat < 42);
-      const isSahel = (lon > -17 && lon < 35 && lat > 10 && lat < 18);
-
-      // base staples
-      ["wheat","salt","timber","tools"].forEach(x=>pick.add(x));
-
-      if(isCoastalBias){ ["fish","salt","tar","hemp"].forEach(x=>pick.add(x)); }
-
-      if(climate==="tropical"){ ["sugar","coffee","cocoa","rice","spiceMix"].forEach(()=>{}); }
-      if(climate==="tropical"){ ["sugar","coffee","rice","pepper","cinnamon"].forEach(x=>pick.add(x)); }
-      if(climate==="savanna"){ ["livestock","maize","goldOre","cotton"].forEach(x=>pick.add(x)); }
-      if(climate==="desert"){ ["dates","salt","incense","horses"].forEach(x=>pick.add(x)); }
-      if(climate==="mediterranean"){ ["olive","oil","wine","linen"].forEach(x=>pick.add(x)); }
-      if(climate==="temperate"){ ["wheat","wool","iron","cloth"].forEach(x=>pick.add(x)); }
-      if(climate==="cold"){ ["fur","timber","iron","fish"].forEach(x=>pick.add(x)); }
-
-      // overrides (more “real-ish”)
-      if(isGulf){ ["pearls","dates","fish","incense","salt"].forEach(x=>pick.add(x)); }
-      if(isIndia){ ["pepper","cinnamon","cotton","sugar","tea"].forEach(x=>pick.add(x)); }
-      if(isSEAsia){ ["clove","nutmeg","pepper","timber","porcelain"].forEach(x=>pick.add(x)); }
-      if(isEurope){ ["iron","wool","cloth","paper","books"].forEach(x=>pick.add(x)); }
-      if(isChina){ ["silk","porcelain","tea","paper","tools"].forEach(x=>pick.add(x)); }
-      if(isSahel){ ["goldOre","salt","livestock","amber"].forEach(x=>pick.add(x)); }
-
-      // sprinkle many extras by category to make trade wide
-      const cats = ["food","lux","metal","textile","spice","wood","military","trade"];
-      for(let i=0;i<6;i++){
-        const cat = cats[(Math.random()*cats.length)|0];
-        const options = RES.list.filter(r=>r.cat===cat);
-        pick.add(options[(Math.random()*options.length)|0].id);
-      }
-
-      const ids = Array.from(pick).filter(id=>RES.byId.has(id)).slice(0, 14);
-      return ids;
-    }
-
     function buildProvinces(){
       provinces = [];
       selectedProv = null;
-
       provG.selectAll("*").remove();
       labelsG.selectAll("*").remove();
       iconG.selectAll("*").remove();
 
-      const n = CFG.maxProvinces;
-      const pts = randomOnLand(n);
+      const pts = randomOnLand(CFG.maxProvinces);
       const delaunay = Delaunay.from(pts, d=>d.xy[0], d=>d.xy[1]);
       const vor = delaunay.voronoi([0,0,W(),H()]);
 
-      // build province objects
       for(let i=0;i<pts.length;i++){
         const poly = vor.cellPolygon(i);
         if(!poly) continue;
         const centroidXY = d3.polygonCentroid(poly);
         const lon = pts[i].lonlat[0], lat = pts[i].lonlat[1];
         const climate = climateByLatLon(lon,lat);
-        const name = provinceNameFromNearestCity(lon,lat);
+        const coastal = isCoastal(lon,lat);
+
         provinces.push({
-          id:i,
-          poly,
-          centroidXY,
-          lonlat:[lon,lat],
+          id:i, poly, centroidXY, lonlat:[lon,lat],
           neighbors:new Set(),
           owner:null,
           climate,
+          coastal,
           resources: resourcesByLocation(lon,lat,climate),
-          buildings:{market:0, farm:0, barracks:0, fort:0},
-          buildQueue:[], // {type, endsAt, startedAt}
+          buildings:{market:0, farm:0, barracks:0, fort:0, city:0, village:0, school:0, port:0},
+          buildQueue:[],
           capital:false,
-          siege:null, // {attackerId, endsAt, startedAt, progress, active}
-          cityTag: null, // "village" | "city"
-          name,
+          capitalName:null,
+          governorChildId:null, // decentralized
+          siege:null, // {attackerId, endsAt}
         });
       }
 
-      // adjacency
       for(let i=0;i<pts.length;i++){
         for(const j of delaunay.neighbors(i)){
           const a = provinces.find(p=>p.id===i);
@@ -1106,36 +888,33 @@
         }
       }
 
-      // sprinkle cities/villages (visual)
-      for(const p of provinces){
-        const r = Math.random();
-        if(r < 0.07) p.cityTag = "city";
-        else if(r < 0.20) p.cityTag = "village";
-      }
-
       drawProvinces();
+      refreshMajorCityLabels();
+      refreshIcons();
       refreshSelectionUI();
     }
 
     function provincePath(d){ return "M" + d.poly.map(p=>p.join(",")).join("L") + "Z"; }
 
-    function refreshProvincePaths(){
-      provG.selectAll("path.province")
-        .attr("d", d=>provincePath(d));
-    }
-
-    function ownerFill(ownerId, d){
-      if(!ownerId) return "rgba(255,255,255,.10)";
-      const st = states.get(ownerId);
-      if(!st) return "rgba(255,255,255,.12)";
-      return hsla(st.hue, 85, st.isPlayer ? 58 : 52, st.isPlayer ? 0.55 : 0.40);
-    }
-
-    function relationColor(val){
-      // -1 enemy => red, 0 neutral => gray, +1 ally => green
-      if(val >= 0.6) return "rgba(50,208,127,.55)";
-      if(val <= -0.6) return "rgba(255,107,107,.55)";
-      return "rgba(180,190,210,.20)";
+    function mapFill(d){
+      if(MAP_MODE==="climate") return climateColor(d.climate);
+      if(MAP_MODE==="economy"){
+        if(!d.owner) return "rgba(255,255,255,.10)";
+        const st = states.get(d.owner);
+        if(!st) return "rgba(255,255,255,.10)";
+        const x = clamp(st.incomePM/320, 0, 1);
+        return `rgba(122,162,255,${0.10 + x*0.55})`;
+      }
+      if(MAP_MODE==="relations"){
+        if(!playerId) return d.owner ? ownerFill(d.owner) : "rgba(255,255,255,.10)";
+        if(!d.owner) return "rgba(255,255,255,.10)";
+        if(d.owner===playerId) return ownerFill(d.owner);
+        const rel = states.get(playerId)?.relations?.get(d.owner) ?? 0;
+        if(rel >= 0.6) return "rgba(50,208,127,.55)";
+        if(rel <= -0.6) return "rgba(255,107,107,.55)";
+        return "rgba(180,190,210,.22)";
+      }
+      return d.owner ? ownerFill(d.owner) : "rgba(255,255,255,.10)";
     }
 
     function drawProvinces(){
@@ -1145,151 +924,489 @@
         .attr("class","province")
         .attr("d", d=>provincePath(d))
         .attr("fill", d=>mapFill(d))
-        .on("click", (event, d)=>onProvinceClick(d.id));
-
-      refreshCityLabels(true);
-      refreshIcons();
-    }
-
-    function mapFill(d){
-      if(MAP_MODE==="climate"){
-        return climateColor(d.climate);
-      }
-      if(MAP_MODE==="economy"){
-        if(!d.owner) return "rgba(255,255,255,.10)";
-        const st = states.get(d.owner);
-        if(!st) return "rgba(255,255,255,.12)";
-        // economy heat from income
-        const x = clamp(st.incomePM/220, 0, 1);
-        return `rgba(122,162,255,${0.10 + x*0.55})`;
-      }
-      if(MAP_MODE==="relations"){
-        if(!playerId) return d.owner ? ownerFill(d.owner,d) : "rgba(255,255,255,.10)";
-        if(!d.owner) return "rgba(255,255,255,.10)";
-        if(d.owner === playerId) return ownerFill(d.owner,d);
-        const rel = states.get(playerId)?.relations?.get(d.owner) ?? 0;
-        return relationColor(rel);
-      }
-      if(MAP_MODE==="resources"){
-        // show resource richness by count
-        const x = clamp((d.resources.length-4)/10, 0, 1);
-        return `rgba(255,209,102,${0.10 + x*0.55})`;
-      }
-      // normal (owners)
-      return d.owner ? ownerFill(d.owner,d) : "rgba(255,255,255,.10)";
+        .on("click", (event,d)=>onProvinceClick(d.id));
     }
 
     function refreshProvincesStyle(){
       provG.selectAll("path.province")
         .classed("sel", d=>d.id===selectedProv)
-        .attr("fill", d=>mapFill(d))
-        .attr("opacity", d=>{
-          if(!d.owner) return 0.92;
-          if(d.owner===playerId) return 0.99;
-          return 0.95;
-        });
+        .attr("fill", d=>mapFill(d));
     }
 
-    function refreshCityLabels(force=false){
-      // show labels based on zoom scale and force
-      // estimate scale from transform
+    /* ========= Labels: ONLY major cities + zoom shrink ========= */
+    function refreshMajorCityLabels(){
       const tr = d3.zoomTransform(svg.node());
-      const scale = tr.k;
+      const k = tr.k;
 
-      // only show more labels when zoomed in
-      const showCities = scale > 2.2;
-      const showVillages = scale > 4.0;
+      // ✅ smaller when zoom increases
+      const base = 12;
+      const fs = clamp(base / Math.sqrt(k), 7.5, 12);
 
-      // Also show major real cities always (but fewer)
-      const cityPts = world.cities.map((c,i)=>({id:"C"+i, ...c, xy: projection([c.lon,c.lat])})).filter(x=>x.xy);
+      // show threshold
+      const show = k > 1.15;
 
-      // remove and redraw (simpler)
       labelsG.selectAll("*").remove();
 
-      // real cities
-      labelsG.selectAll("text.cityLabel")
-        .data(cityPts)
+      const pts = MAJOR_CITIES
+        .map((c,i)=>({id:i, ...c, xy: projection([c.lon,c.lat])}))
+        .filter(x=>x.xy);
+
+      labelsG.selectAll("text")
+        .data(pts)
         .enter()
         .append("text")
-        .attr("class","cityLabel")
         .attr("x", d=>d.xy[0])
         .attr("y", d=>d.xy[1])
         .attr("text-anchor","middle")
         .attr("dominant-baseline","central")
-        .style("font-size", scale>3 ? "11px" : "10px")
+        .style("font-size", fs + "px")
         .text(d=>d.name)
-        .attr("opacity", scale>1.4 ? 0.95 : 0.0);
+        .attr("opacity", show ? 0.95 : 0.0);
 
-      // province local labels (closest city name) only when zoomed
-      if(showCities){
-        const ps = provinces.filter(p=>p.cityTag==="city");
-        labelsG.selectAll("text.pCity")
-          .data(ps.slice(0, 280))
+      // show capital name if exists (player + AIs) when zoomed a bit
+      if(k > 1.6){
+        const caps = provinces.filter(p=>p.capital && p.capitalName && p.owner);
+        labelsG.selectAll("text.capNames")
+          .data(caps)
           .enter()
           .append("text")
-          .attr("class","pCity")
+          .attr("class","capNames")
           .attr("x", d=>d.centroidXY[0])
-          .attr("y", d=>d.centroidXY[1])
+          .attr("y", d=>d.centroidXY[1] - 14)
           .attr("text-anchor","middle")
           .attr("dominant-baseline","central")
-          .style("font-size", "10px")
-          .text(d=>d.name)
+          .style("font-size", clamp((fs-1.5), 7, 10) + "px")
+          .text(d=>d.capitalName)
           .attr("opacity", 0.85);
       }
-      if(showVillages){
-        const ps = provinces.filter(p=>p.cityTag==="village");
-        labelsG.selectAll("text.pVillage")
-          .data(ps.slice(0, 420))
-          .enter()
-          .append("text")
-          .attr("class","pVillage")
-          .attr("x", d=>d.centroidXY[0])
-          .attr("y", d=>d.centroidXY[1])
-          .attr("text-anchor","middle")
-          .attr("dominant-baseline","central")
-          .style("font-size", "9px")
-          .text(d=>d.name)
-          .attr("opacity", 0.70);
-      }
     }
 
+    /* ========= Icons ========= */
     function refreshIcons(){
       iconG.selectAll("*").remove();
-      // Capitals + Forts + City/Village icons
       for(const p of provinces){
         const [x,y] = p.centroidXY;
+
         if(p.capital && p.owner){
-          iconG.append("use")
-            .attr("href","#ico-capital")
-            .attr("transform",`translate(${x},${y})`)
-            .attr("class","icon");
+          iconG.append("use").attr("href","#ico-capital").attr("transform",`translate(${x},${y})`).attr("class","icon");
         }
         if(p.buildings.fort>0){
-          iconG.append("use")
-            .attr("href","#ico-fort")
-            .attr("transform",`translate(${x+12},${y-10}) scale(0.9)`)
-            .attr("class","icon")
-            .attr("opacity",0.92);
+          iconG.append("use").attr("href","#ico-fort").attr("transform",`translate(${x+12},${y-10}) scale(0.9)`).attr("class","icon");
         }
-        if(p.cityTag==="city"){
-          iconG.append("use")
-            .attr("href","#ico-city")
-            .attr("transform",`translate(${x-12},${y-10}) scale(0.95)`)
-            .attr("class","icon")
-            .attr("opacity",0.85);
-        } else if(p.cityTag==="village"){
-          iconG.append("use")
-            .attr("href","#ico-village")
-            .attr("transform",`translate(${x-10},${y-8}) scale(0.95)`)
-            .attr("class","icon")
-            .attr("opacity",0.75);
+        if(p.buildings.city>0){
+          iconG.append("use").attr("href","#ico-city").attr("transform",`translate(${x-12},${y-10}) scale(0.95)`).attr("class","icon").attr("opacity",0.92);
+        } else if(p.buildings.village>0){
+          iconG.append("use").attr("href","#ico-village").attr("transform",`translate(${x-10},${y-8}) scale(0.95)`).attr("class","icon").attr("opacity",0.85);
+        }
+        if(p.buildings.school>0){
+          iconG.append("use").attr("href","#ico-school").attr("transform",`translate(${x-20},${y+8}) scale(0.92)`).attr("class","icon").attr("opacity",0.80);
+        }
+        if(p.buildings.port>0){
+          iconG.append("use").attr("href","#ico-port").attr("transform",`translate(${x+20},${y+8}) scale(0.92)`).attr("class","icon").attr("opacity",0.86);
+        }
+      }
+      refreshMajorCityLabels();
+    }
+
+    /* ========= Selection UI ========= */
+    function refreshSelectionUI(){
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!p){
+        ui.selLabel.textContent = "—";
+        ui.selOwner.textContent = "—";
+        ui.selInfo.textContent = "—";
+        return;
+      }
+      const owner = p.owner ? (states.get(p.owner)?.name ?? p.owner) : "Free";
+      ui.selLabel.textContent = p.capitalName ? `${p.capitalName}` : `Province #${p.id}`;
+      ui.selOwner.textContent = owner;
+
+      const resNames = p.resources.slice(0,6).map(id=>RES.byId.get(id)?.name?.split("/")[0].trim() ?? id);
+      const extra = Math.max(0, p.resources.length-6);
+      const resText = resNames.join(", ") + (extra?` +${extra}`:"");
+
+      const b = p.buildings;
+      const q = p.buildQueue.length ? ` | Build: ${p.buildQueue.map(x=>x.type).join(",")}` : "";
+      const gov = p.governorChildId ? ` | Governor: ${states.get(playerId)?.children?.find(c=>c.id===p.governorChildId)?.name ?? "Child"}` : "";
+
+      ui.selInfo.textContent = `Climate: ${p.climate} | Coastal: ${p.coastal?"Yes":"No"} | Resources: ${resText} | Buildings: M${b.market} F${b.farm} B${b.barracks} Ft${b.fort} City${b.city} Vil${b.village} Sch${b.school} Port${b.port}${q}${gov}`;
+    }
+
+    function onProvinceClick(id){
+      selectedProv = id;
+      refreshSelectionUI();
+      refreshProvincesStyle();
+
+      const p = provinces.find(x=>x.id===id);
+      if(!p) return;
+
+      if(!playerId){
+        // founding flow
+        if(!p.owner){
+          $("foundBack").style.display = "flex";
+          setStatus("اكتب اسم الدولة والحاكم");
+        }else{
+          setStatus("اختر إقليم حر");
         }
       }
     }
 
-    /* =========================
-       Attack / Siege animation
-       ========================= */
+    /* ========= Theme toggle ========= */
+    $("btnTheme").onclick = ()=>{
+      document.body.dataset.theme = (document.body.dataset.theme==="dark") ? "light" : "dark";
+    };
+
+    /* ========= Map modes ========= */
+    function setMode(m){
+      MAP_MODE = m;
+      refreshProvincesStyle();
+    }
+    $("modeNormal").onclick = ()=>setMode("normal");
+    $("modeClimate").onclick = ()=>setMode("climate");
+    $("modeRelations").onclick = ()=>setMode("relations");
+    $("modeEconomy").onclick = ()=>setMode("economy");
+
+    /* ========= Founding ========= */
+    function initStateRelations(ownerId){
+      const st = states.get(ownerId);
+      if(!st) return;
+      st.relations = new Map();
+      for(const [oid] of states.entries()){
+        if(oid===ownerId) continue;
+        st.relations.set(oid, 0);
+      }
+    }
+    function setRelation(a,b,val){
+      const A = states.get(a), B = states.get(b);
+      if(!A || !B) return;
+      A.relations.set(b, clamp(val,-1,1));
+      B.relations.set(a, clamp(val,-1,1));
+    }
+
+    $("btnCancel").onclick = ()=>{ $("foundBack").style.display="none"; setStatus("اضغط على الخريطة لاختيار إقليم بداية (حر)"); };
+    $("btnStart").onclick = ()=>{
+      const cap = provinces.find(p=>p.id===selectedProv);
+      if(!cap || cap.owner){ alert("اختر إقليم حر أولاً."); return; }
+
+      const stateName = inStatePreset.value;
+      const ruler = ($("inRuler").value||"").trim();
+      const house = ($("inHouse").value||"").trim();
+      if(!ruler || !house){ alert("اكتب اسم الحاكم واسم العائلة."); return; }
+
+      const pal = PALETTE[Number(inColor.value)] || PALETTE[0];
+
+      playerId = "P";
+      states.set(playerId, {
+        id:playerId,
+        name: stateName,
+        hue: pal.hue,
+        emblem: pal.emblem,
+        isPlayer:true,
+        ruler,
+        house,
+        spouse: null,
+        heirId: null,
+        children: [],
+        gold: 450,
+        incomePM: CFG.baseIncomePM,
+        stab: 75,
+        supply: 70,
+        warHeat: 5,
+        army: 10000,              // ✅ 10k start
+        recruitCap: 12000,        // base cap
+        stock: new Map(),
+        relations: new Map(),
+        debtSec:0, collapseSec:0
+      });
+
+      // starting stock
+      for(let i=0;i<30;i++){
+        const r = RES.list[(Math.random()*RES.list.length)|0].id;
+        states.get(playerId).stock.set(r, (states.get(playerId).stock.get(r)||0) + (30 + (Math.random()*60|0)));
+      }
+
+      // claim capital + one neighbor
+      cap.owner = playerId;
+      cap.capital = true;
+      cap.capitalName = "Capital";
+      // start neighbor
+      const neigh = [...cap.neighbors].map(nid=>provinces.find(p=>p.id===nid)).filter(p=>p && !p.owner);
+      if(neigh[0]) neigh[0].owner = playerId;
+
+      // Create AIs with real names
+      createAIs(14);
+      // init relations for all
+      for(const [id] of states.entries()) initStateRelations(id);
+      // random initial relations
+      for(const [id] of states.entries()){
+        if(id===playerId) continue;
+        const r = Math.random();
+        setRelation(playerId, id, r<0.18 ? -0.85 : r<0.30 ? 0.70 : 0);
+      }
+
+      $("foundBack").style.display="none";
+      gameStartAt = now();
+      log(`🏛️ تأسست "${stateName}" بقيادة "${ruler}" (${house}) ${pal.emblem}`);
+      setStatus("اختر عاصمتك وسمّها");
+      refreshIcons();
+      refreshProvincesStyle();
+      updateHUD();
+    };
+
+    /* ========= AI creation + assignment ========= */
+    function createAIs(count){
+      // remove old AIs
+      for(const [id] of states.entries()){
+        if(id!=="P") states.delete(id);
+      }
+      const availableNames = REAL_COUNTRIES.filter(n=>n !== states.get("P")?.name);
+      const used = new Set([states.get("P")?.name]);
+
+      for(let i=0;i<count;i++){
+        const id = "A"+i;
+        let name = availableNames[(Math.random()*availableNames.length)|0];
+        while(used.has(name)) name = availableNames[(Math.random()*availableNames.length)|0];
+        used.add(name);
+
+        const pal = PALETTE[(i+2) % PALETTE.length];
+        states.set(id,{
+          id,name,
+          hue: (pal.hue + i*13)%360,
+          emblem: pal.emblem,
+          isPlayer:false,
+          ruler:"AI Ruler",
+          house:"House "+(i+1),
+          spouse:null,
+          heirId:null,
+          children: makeAIChildren(i),
+          gold: 420 + (Math.random()*220|0),
+          incomePM: CFG.baseIncomePM + (Math.random()*40|0),
+          stab: 68 + (Math.random()*18|0),
+          supply: 65 + (Math.random()*25|0),
+          warHeat: 10,
+          army: 9500 + (Math.random()*2500|0),
+          recruitCap: 14000 + (Math.random()*3000|0),
+          stock: new Map(),
+          relations:new Map(),
+          debtSec:0, collapseSec:0
+        });
+
+        // AI stock
+        const st = states.get(id);
+        for(let k=0;k<24;k++){
+          const r = RES.list[(Math.random()*RES.list.length)|0].id;
+          st.stock.set(r, (st.stock.get(r)||0) + (20 + (Math.random()*40|0)));
+        }
+      }
+
+      // assign AI provinces
+      assignAIProvinces();
+    }
+
+    function makeAIChildren(seed){
+      const names = ["Ali","Hassan","Omar","Fatima","Zaynab","Mustafa","Selim","Amina","Yusuf","Khadija","Ibrahim","Maryam"];
+      const c = [];
+      for(let i=0;i<3;i++){
+        c.push({id:`c${seed}-${i}`, name: names[(seed+i)%names.length] + " " + (i+1), married:false, spouse:null});
+      }
+      return c;
+    }
+
+    function assignAIProvinces(){
+      // free all non-player claims
+      for(const p of provinces){
+        if(p.owner && p.owner!=="P"){
+          p.owner = null; p.capital=false; p.capitalName=null;
+          p.buildQueue=[]; p.siege=null; p.governorChildId=null;
+          p.buildings = {market:0,farm:0,barracks:0,fort:0,city:0,village:0,school:0,port:0};
+        }
+      }
+
+      const pool = provinces.filter(p=>!p.owner).sort(()=>Math.random()-0.5);
+      let idx = 0;
+
+      for(const [id, st] of states.entries()){
+        if(id==="P") continue;
+        while(idx < pool.length && pool[idx].owner) idx++;
+        const cap = pool[idx++];
+        if(!cap) break;
+
+        cap.owner = id;
+        cap.capital = true;
+        cap.capitalName = (MAJOR_CITIES[(Math.random()*MAJOR_CITIES.length)|0]?.name || st.name.split(" ")[0]) + " Capital";
+        cap.buildings.market = 1;
+        cap.buildings.farm = 1;
+        cap.buildings.barracks = 1;
+        cap.buildings.fort = Math.random()<0.6 ? 1 : 0;
+        if(cap.coastal && Math.random()<0.6) cap.buildings.port = 1;
+
+        const ns = [...cap.neighbors].map(nid=>provinces.find(p=>p.id===nid)).filter(p=>p && !p.owner).slice(0,2);
+        for(const n of ns){
+          n.owner = id;
+          if(Math.random()<0.5) n.buildings.farm = 1;
+          if(n.coastal && Math.random()<0.25) n.buildings.port = 1;
+        }
+      }
+
+      refreshIcons();
+      refreshProvincesStyle();
+    }
+
+    /* ========= Capital selection + naming ========= */
+    $("btnSetCapital").onclick = ()=>{
+      if(!playerId){ log("ابدأ اللعبة أولاً."); return; }
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!p || p.owner!==playerId){ log("لازم تختار إقليم تابع لك."); return; }
+      $("capBack").style.display="flex";
+      $("capName").value = p.capitalName || "";
+    };
+    $("capClose").onclick = ()=> $("capBack").style.display="none";
+    $("capOk").onclick = ()=>{
+      const name = ($("capName").value||"").trim();
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!p || p.owner!==playerId){ $("capBack").style.display="none"; return; }
+
+      // unset old capital
+      for(const q of provinces){
+        if(q.owner===playerId) q.capital = false;
+      }
+      p.capital = true;
+      p.capitalName = name || "Capital";
+      $("capBack").style.display="none";
+      log(`👑 عاصمتك الآن: ${p.capitalName}`);
+      refreshIcons();
+      refreshSelectionUI();
+      setStatus("جاهز للبناء والتوسع");
+    };
+
+    /* ========= Build queue ========= */
+    function queueBuild(p, type){
+      const st = states.get(playerId);
+      if(!st) return;
+      const cost = CFG.costs[type];
+      if(st.gold < cost){ log("⚠️ ذهب غير كافي."); return; }
+
+      // port requires coastal
+      if(type==="port" && !p.coastal){
+        log("⚠️ الميناء يحتاج إقليم قريب من البحر.");
+        return;
+      }
+
+      st.gold -= cost;
+      const seconds = CFG.buildTimes[type];
+      const endsAt = now() + seconds*1000;
+      p.buildQueue.push({type, endsAt});
+      log(`🏗️ بدأ بناء ${type} (≈${Math.ceil(seconds/60)} دقائق)`);
+    }
+
+    function processBuildQueues(){
+      const ts = now();
+      for(const p of provinces){
+        if(!p.buildQueue.length) continue;
+        const remain = [];
+        for(const b of p.buildQueue){
+          if(ts >= b.endsAt){
+            p.buildings[b.type] = (p.buildings[b.type]||0) + 1;
+
+            // effects
+            const st = states.get(p.owner);
+            if(st){
+              if(b.type==="market") st.incomePM += 10;
+              if(b.type==="city") { st.incomePM += 14; st.stab = clamp(st.stab+1.2,0,100); }
+              if(b.type==="village") st.incomePM += 7;
+              if(b.type==="school") { st.incomePM += 6; st.stab = clamp(st.stab+1.0,0,100); }
+              if(b.type==="port") st.incomePM += 9;
+              if(b.type==="barracks") st.recruitCap += 2500;
+              if(b.type==="farm") st.supply = clamp(st.supply+3,0,100);
+            }
+
+            log(`✅ اكتمل بناء ${b.type}`);
+          } else {
+            remain.push(b);
+          }
+        }
+        p.buildQueue = remain;
+      }
+    }
+
+    function requireOwned(){
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!p || p.owner!==playerId){ log("⚠️ لازم تختار إقليم تابع لك."); return null; }
+      return p;
+    }
+
+    $("btnBuildMarket").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"market"); };
+    $("btnBuildFarm").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"farm"); };
+    $("btnBuildBarracks").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"barracks"); };
+    $("btnBuildFort").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"fort"); };
+    $("btnBuildCity").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"city"); };
+    $("btnBuildVillage").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"village"); };
+    $("btnBuildSchool").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"school"); };
+    $("btnBuildPort").onclick = ()=>{ if(!playerId) return; const p=requireOwned(); if(p) queueBuild(p,"port"); };
+
+    /* ========= Recruit (depends on barracks count -> cap) ========= */
+    function countBarracks(ownerId){
+      let c=0;
+      for(const p of provinces){
+        if(p.owner===ownerId) c += p.buildings.barracks;
+      }
+      return c;
+    }
+
+    $("btnRecruit").onclick = ()=>{
+      if(!playerId) return;
+      const st = states.get(playerId);
+      const p = requireOwned();
+      if(!p) return;
+
+      const b = countBarracks(playerId);
+      if(b <= 0){
+        log("⚠️ لازم تبني ثكنة أولاً.");
+        return;
+      }
+
+      const cost = 120;
+      if(st.gold < cost){ log("⚠️ ذهب غير كافي."); return; }
+
+      // recruitment amount scales with barracks
+      const add = 600 + b*220;
+      if(st.army + add > st.recruitCap){
+        log("⚠️ وصلت سقف التجنيد. ابنِ ثكنات أكثر.");
+        return;
+      }
+
+      st.gold -= cost;
+      st.army += add;
+      st.supply = clamp(st.supply - 3, 0, 100);
+      log(`🪖 تم تجنيد +${add.toLocaleString()} جندي`);
+    };
+
+    /* ========= Relations improvement ========= */
+    $("btnImproveRel").onclick = ()=>{
+      if(!playerId) return;
+      const st = states.get(playerId);
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!p || !p.owner || p.owner===playerId){ log("اختر دولة أخرى."); return; }
+
+      const cost = 80;
+      if(st.gold < cost){ log("⚠️ ذهب غير كافي."); return; }
+
+      st.gold -= cost;
+      const cur = st.relations.get(p.owner) ?? 0;
+      const next = clamp(cur + 0.25, -1, 1);
+      st.relations.set(p.owner, next);
+      states.get(p.owner)?.relations?.set(playerId, next);
+
+      log(`🤝 تحسنت العلاقة مع ${states.get(p.owner)?.name ?? p.owner}`);
+      refreshProvincesStyle();
+    };
+
+    /* ========= Combat (balanced) ========= */
+    function isAdjacentToPlayer(target){
+      const owned = provinces.filter(p=>p.owner===playerId);
+      return owned.some(p=>p.neighbors.has(target.id));
+    }
+
     function bezierPath(A,B){
       const mx = (A[0]+B[0])/2, my=(A[1]+B[1])/2;
       const dx = B[0]-A[0], dy=B[1]-A[1];
@@ -1311,7 +1428,6 @@
       const color = st?.isPlayer ? "var(--accent)" : "var(--danger)";
 
       armyDot.attr("opacity",1).attr("fill",color).attr("stroke","rgba(255,255,255,.70)").attr("stroke-width",1.2);
-
       attackLine.attr("d", d).attr("opacity", 0.85);
       attackLine.attr("stroke-dashoffset", 0)
         .transition().duration(800).ease(d3.easeCubicInOut)
@@ -1322,12 +1438,12 @@
       const len = temp.getTotalLength();
 
       const t0 = performance.now();
-      const dur = kind==="raid" ? 760 : (kind==="siege" ? 1100 : 920);
+      const dur = kind==="raid" ? 740 : 980;
 
       function step(now){
         const t = Math.min(1, (now-t0)/dur);
         const p = temp.getPointAtLength(len * d3.easeCubicInOut(t));
-        armyDot.attr("cx", p.x).attr("cy", p.y).attr("r", 6 + 1.5*Math.sin(t*10));
+        armyDot.attr("cx", p.x).attr("cy", p.y).attr("r", 6 + 1.6*Math.sin(t*10));
         if(t<1) requestAnimationFrame(step);
         else{
           ping.attr("cx", B[0]).attr("cy", B[1]).attr("r", 6).attr("opacity", 1);
@@ -1338,277 +1454,306 @@
       requestAnimationFrame(step);
     }
 
-    /* =========================
-       Build queue (real minutes)
-       ========================= */
-    function queueBuild(prov, type){
+    function raid(target){
       const st = states.get(playerId);
       if(!st) return;
+      if(!target || target.owner===playerId){ return; }
+      if(!isAdjacentToPlayer(target)){ log("⚠️ لازم يكون مجاور لأحد أقاليمك."); return; }
 
-      // costs
-      const cost = ({market:120, farm:90, barracks:160, fort:220})[type];
-      if(st.gold < cost){ log("⚠️ Gold too low."); return; }
+      const minArmy = 5500;
+      if(st.army < minArmy){ log("⚠️ جيشك ضعيف للغارة."); return; }
 
-      if(prov.buildQueue.some(x=>x.type===type && x.endsAt > now())){ log("ℹ️ Already building."); return; }
-
+      const cost = 60;
+      if(st.gold < cost){ log("⚠️ ذهب غير كافي."); return; }
       st.gold -= cost;
-      const seconds = CFG.buildTimes[type];
-      const startedAt = now();
-      const endsAt = startedAt + seconds*1000;
-      prov.buildQueue.push({type, startedAt, endsAt});
-      log(t("buildQueued", buildLabel(type), Math.round(seconds/60)));
+
+      const loot = Math.round(80 + target.resources.length*10 + target.buildings.market*45) * (0.9 + Math.random()*0.4);
+      st.gold += loot;
+      st.warHeat = clamp(st.warHeat + 10, 0, 100);
+      st.stab = clamp(st.stab - 1.0, 0, 100);
+
+      const from = provinces.find(p=>p.owner===playerId && p.neighbors.has(target.id)) || provinces.find(p=>p.owner===playerId && p.capital);
+      if(from) animateMove(playerId, from.id, target.id, "raid");
+
+      log(`🔥 غارة: +${loot|0} ذهب`);
+      setStatus("غارة");
     }
 
-    function buildLabel(type){
-      if(type==="market") return (LANG==="ar")?"سوق":"Market";
-      if(type==="farm") return (LANG==="ar")?"مزارع":"Farms";
-      if(type==="barracks") return (LANG==="ar")?"ثكنة":"Barracks";
-      return (LANG==="ar")?"حصن":"Fort";
+    function startSiege(target){
+      const st = states.get(playerId);
+      if(!st) return;
+      if(!target || target.owner===playerId){ return; }
+      if(!isAdjacentToPlayer(target)){ log("⚠️ لازم يكون مجاور."); return; }
+
+      const minArmy = 7000;
+      if(st.army < minArmy){ log("⚠️ تحتاج جيش أكبر للحصار."); return; }
+      if(st.supply < 30){ log("⚠️ المؤن قليلة للحصار."); return; }
+
+      const cost = 90;
+      if(st.gold < cost){ log("⚠️ ذهب غير كافي."); return; }
+      st.gold -= cost;
+
+      const fortBonus = target.buildings.fort>0 ? CFG.siegeFortBonusSeconds : 0;
+      const duration = CFG.siegeBaseSeconds + fortBonus + target.buildings.city*30 + target.buildings.market*20;
+      target.siege = {attackerId: playerId, endsAt: now() + duration*1000};
+
+      st.warHeat = clamp(st.warHeat + 16, 0, 100);
+      st.stab = clamp(st.stab - 2.5, 0, 100);
+
+      const from = provinces.find(p=>p.owner===playerId && p.neighbors.has(target.id)) || provinces.find(p=>p.owner===playerId && p.capital);
+      if(from) animateMove(playerId, from.id, target.id, "siege");
+
+      log(`🏰 بدأ الحصار على ${target.capitalName || ("Province #"+target.id)} (≈${Math.ceil(duration/60)} دقيقة)`);
+      setStatus("حصار");
     }
 
-    function processBuildQueues(){
+    function processSieges(){
       const ts = now();
       for(const p of provinces){
-        if(!p.buildQueue.length) continue;
-        const still = [];
-        for(const b of p.buildQueue){
-          if(ts >= b.endsAt){
-            // complete
-            p.buildings[b.type] += 1;
-            if(b.type==="fort"){ /* fort implies walls/defense */ }
-            log(t("buildDone", buildLabel(b.type)));
-          }else{
-            still.push(b);
+        if(!p.siege) continue;
+        if(ts < p.siege.endsAt) continue;
+
+        const atk = states.get(p.siege.attackerId);
+        const def = p.owner ? states.get(p.owner) : null;
+        if(!atk){ p.siege=null; continue; }
+
+        // battle resolve (balanced)
+        const fort = p.buildings.fort>0 ? 0.22 : 0;
+        const atkPow = atk.army*(0.20 + Math.random()*0.05) + atk.incomePM*2;
+        const defPow = (def ? def.army*(0.18 + Math.random()*0.04) : 4500) * (1+fort);
+
+        if(atkPow > defPow){
+          // capture
+          const prev = p.owner;
+          p.owner = p.siege.attackerId;
+          p.capital = false;
+          p.capitalName = p.capitalName || null;
+          p.governorChildId = null;
+
+          // casualties
+          atk.army = Math.max(0, atk.army - (800 + (Math.random()*900|0)));
+          atk.supply = clamp(atk.supply - 6, 0, 100);
+          atk.stab = clamp(atk.stab - (2.2 + CFG.stabilityExpandPenalty), 0, 100);
+          atk.warHeat = clamp(atk.warHeat + 10, 0, 100);
+
+          if(def){
+            def.army = Math.max(0, def.army - (650 + (Math.random()*750|0)));
+            def.stab = clamp(def.stab - 2.0, 0, 100);
+            def.warHeat = clamp(def.warHeat + 10, 0, 100);
           }
+
+          log(`🏴‍☠️ تم ضم الإقليم!`);
+          setStatus("تم الضم");
+        }else{
+          atk.army = Math.max(0, atk.army - (550 + (Math.random()*650|0)));
+          atk.stab = clamp(atk.stab - 1.2, 0, 100);
+          log(`❌ فشل الحصار`);
+          setStatus("فشل");
         }
-        p.buildQueue = still;
+
+        p.siege = null;
+        refreshIcons();
       }
     }
 
-    /* =========================
-       Caravans / Ships (moving trade units)
-       ========================= */
-    const Traders = {
-      units: [], // {id, type:"caravan"|"ship", ownerId, from, to, resourceId, qty, startXY, endXY, startedAt, etaAt, active, plundered}
-      nextId: 1,
-      create(type, fromId, toId, resourceId, qty){
-        const st = states.get(playerId);
-        if(!st) return;
-        const from = provinces.find(p=>p.id===fromId);
-        const to = provinces.find(p=>p.id===toId);
-        if(!from || !to) return;
-        if(from.owner!==playerId || to.owner!==playerId){ log("⚠️ Route must be between your provinces."); return; }
+    $("btnRaid").onclick = ()=>{ if(!playerId) return; const p=provinces.find(x=>x.id===selectedProv); if(p) raid(p); };
+    $("btnSiege").onclick = ()=>{ if(!playerId) return; const p=provinces.find(x=>x.id===selectedProv); if(p) startSiege(p); };
 
-        const stock = st.stock.get(resourceId) ?? 0;
-        if(stock < qty){ log("⚠️ Not enough stock."); return; }
+    /* ========= Dynasty + decentralization + marriage ========= */
+    function renderDynasty(){
+      const st = states.get(playerId);
+      if(!st){ $("dynList").textContent="—"; return; }
 
-        // fee
-        const fee = type==="ship" ? 55 : 35;
-        if(st.gold < fee){ log("⚠️ Gold too low."); return; }
-        st.gold -= fee;
+      const heir = st.heirId ? st.children.find(c=>c.id===st.heirId)?.name : "—";
+      const spouse = st.spouse || "—";
 
-        st.stock.set(resourceId, stock - qty);
-
-        const A = from.centroidXY, B = to.centroidXY;
-        const dist = Math.hypot(B[0]-A[0], B[1]-A[1]);
-        const speed = (type==="ship") ? CFG.shipSpeedPxPerSec : CFG.caravanSpeedPxPerSec;
-        const travelSec = Math.max(18, dist / speed); // minimum travel time
-        const startedAt = now();
-        const etaAt = startedAt + travelSec*1000;
-
-        this.units.push({
-          id: this.nextId++,
-          type, ownerId: playerId,
-          from: fromId, to: toId,
-          resourceId, qty,
-          startXY: A, endXY: B,
-          startedAt, etaAt,
-          active: true,
-          plundered: false
-        });
-      },
-      step(){
-        const ts = now();
-        const st = states.get(playerId);
-        if(!st) return;
-
-        for(const u of this.units){
-          if(!u.active) continue;
-          if(ts >= u.etaAt){
-            // chance of plunder if war heat high
-            const danger = clamp(st.warHeat/100, 0, 1);
-            const ambushChance = u.type==="caravan" ? (0.08 + danger*0.18) : (0.05 + danger*0.12);
-            if(Math.random() < ambushChance){
-              u.plundered = true;
-              u.active = false;
-              log(`☠️ ${u.type==="ship"?"Ship":"Caravan"} plundered! (${RES.byId.get(u.resourceId)?.name ?? u.resourceId})`);
-              st.stab = clamp(st.stab - 2, 0, 100);
-              continue;
-            }
-
-            // deliver => convert to gold based on market price (trade profit)
-            const price = Market.prices.get(u.resourceId) ?? 10;
-            const gain = Math.round(price * u.qty * (u.type==="ship" ? 1.15 : 1.05));
-            st.gold += gain;
-            st.pop += (u.type==="ship" ? 1.2 : 0.8);
-            st.stab = clamp(st.stab + 0.2, 0, 100);
-
-            u.active = false;
-            log(`💱 Trade delivered: +${gain} gold (${RES.byId.get(u.resourceId)?.name ?? u.resourceId})`);
-          }
-        }
-      },
-      render(){
-        fxG.selectAll("circle.trader").remove();
-        const ts = now();
-        for(const u of this.units){
-          if(!u.active) continue;
-          const t01 = clamp((ts - u.startedAt) / (u.etaAt - u.startedAt), 0, 1);
-          const x = u.startXY[0] + (u.endXY[0]-u.startXY[0]) * d3.easeCubicInOut(t01);
-          const y = u.startXY[1] + (u.endXY[1]-u.startXY[1]) * d3.easeCubicInOut(t01);
-          fxG.append("circle")
-            .attr("class","trader")
-            .attr("cx", x).attr("cy", y)
-            .attr("r", u.type==="ship" ? 4.5 : 4)
-            .attr("fill", u.type==="ship" ? "rgba(255,209,102,.85)" : "rgba(50,208,127,.85)")
-            .attr("stroke","rgba(255,255,255,.60)")
-            .attr("stroke-width",1.1)
-            .attr("opacity",0.95);
-        }
+      const lines = [];
+      lines.push(`<div><b>House:</b> ${escapeHtml(st.house)} | <b>Ruler:</b> ${escapeHtml(st.ruler)} | <b>Spouse:</b> ${escapeHtml(spouse)} | <b>Heir:</b> ${escapeHtml(heir)}</div>`);
+      lines.push(`<div style="margin-top:10px"><b>Children:</b></div>`);
+      for(const c of st.children){
+        const tag = (c.id===st.heirId) ? " (Heir)" : "";
+        const m = c.married ? (" — married to " + c.spouse) : "";
+        lines.push(`<div style="padding:6px 0; border-bottom:1px solid var(--stroke)"><b>${escapeHtml(c.name)}</b>${tag}${escapeHtml(m)}</div>`);
       }
+
+      $("dynList").innerHTML = lines.join("") || "—";
+      // fill grant dropdown
+      $("grantChild").innerHTML = st.children.map(c=>`<option value="${c.id}">${c.name}${c.id===st.heirId?" (Heir)":""}</option>`).join("");
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    $("btnDynasty").onclick = ()=>{
+      if(!playerId){ log("ابدأ اللعبة أولاً."); return; }
+      $("dynBack").style.display="flex";
+      renderDynasty();
+    };
+    $("dynClose").onclick = ()=> $("dynBack").style.display="none";
+
+    $("btnAddChild").onclick = ()=>{
+      const st = states.get(playerId);
+      if(!st) return;
+      const name = prompt("اسم الابن/الابنة؟");
+      if(!name) return;
+      const id = "ch"+Math.random().toString(16).slice(2,8);
+      st.children.push({id, name, married:false, spouse:null});
+      log(`👶 تم إضافة: ${name}`);
+      renderDynasty();
     };
 
-    /* =========================
-       Diplomacy / Relations
-       ========================= */
-    function initRelationsFor(ownerId){
-      const st = states.get(ownerId);
-      if(!st) return;
-      st.relations = new Map();
-      for(const [oid] of states.entries()){
-        if(oid === ownerId) continue;
-        st.relations.set(oid, 0); // neutral
-      }
-    }
-
-    function setRelation(a,b,val){
-      const A = states.get(a), B = states.get(b);
-      if(!A || !B) return;
-      A.relations.set(b, clamp(val,-1,1));
-      B.relations.set(a, clamp(val,-1,1));
-    }
-
-    function refreshDiplomacyUI(){
-      const box = $("dipList");
-      if(!box) return;
+    $("btnSetHeir").onclick = ()=>{
       const st = states.get(playerId);
-      if(!st){ box.textContent = "—"; return; }
+      if(!st) return;
+      if(!st.children.length){ log("لا يوجد أبناء."); return; }
+      const pick = $("grantChild").value;
+      st.heirId = pick;
+      log("👑 تم تعيين ولي عهد.");
+      renderDynasty();
+    };
 
-      const rows = [];
-      for(const [id, s] of states.entries()){
-        if(id===playerId) continue;
-        const rel = st.relations.get(id) ?? 0;
-        const color = rel>=0.6 ? "var(--ok)" : rel<=-0.6 ? "var(--danger)" : "rgba(180,190,210,.55)";
-        const txt = rel>=0.6 ? "ALLY" : rel<=-0.6 ? "ENEMY" : "NEUTRAL";
-        rows.push(`
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px; border:1px solid var(--stroke); border-radius:12px; margin-bottom:8px;">
-            <div>
-              <b>${escapeHtml(s.name)}</b>
-              <div style="color:var(--muted); font-size:11px">Relation: <span style="color:${color}; font-weight:700">${txt}</span></div>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button class="btn ok" data-rel="ally" data-id="${id}">Ally</button>
-              <button class="btn" data-rel="neutral" data-id="${id}">Neutral</button>
-              <button class="btn danger" data-rel="enemy" data-id="${id}">Enemy</button>
-            </div>
-          </div>
-        `);
-      }
-      box.innerHTML = rows.join("") || "—";
+    $("btnMarry").onclick = ()=>{
+      const st = states.get(playerId);
+      if(!st) return;
+      const who = prompt("اكتب اسم الزوج/الزوجة للحاكم:");
+      if(!who) return;
+      st.spouse = who;
+      log(`💍 زواج الحاكم من: ${who}`);
+      renderDynasty();
+    };
 
-      box.querySelectorAll("button[data-rel]").forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.getAttribute("data-id");
-          const rel = b.getAttribute("data-rel");
-          if(rel==="ally") setRelation(playerId, id, 0.8);
-          else if(rel==="enemy") setRelation(playerId, id, -0.9);
-          else setRelation(playerId, id, 0);
-          log(`🤝 Diplomacy updated with ${states.get(id)?.name ?? id}`);
-          refreshDiplomacyUI();
-          refreshProvincesStyle();
-        };
-      });
-    }
+    $("btnGrant").onclick = ()=>{
+      const st = states.get(playerId);
+      const p = provinces.find(x=>x.id===selectedProv);
+      if(!st || !p || p.owner!==playerId){ log("اختر إقليم تابع لك."); return; }
+      if(!st.children.length){ log("أضف أبناء أولاً."); return; }
+      const cid = $("grantChild").value;
+      p.governorChildId = cid;
+      // effect: decentralization
+      st.stab = clamp(st.stab + 2.2, 0, 100);
+      log("🏛️ تم منح الإقليم لحاكم نيابي (استقرار +، دخل الإقليم -).");
+      refreshSelectionUI();
+    };
 
-    /* =========================
-       Economy + War + Loss/Win
-       ========================= */
-    let gameStartAt = null;
-    let tick = 0;
-    let econTick = 0;
-    let aiTick = 0;
+    /* ========= Economy (auto income, ports, cities etc) ========= */
+    function incomeFromProvince(p, st){
+      // base income from buildings
+      let inc = 0;
+      inc += p.buildings.market * 14;
+      inc += p.buildings.city * 18;
+      inc += p.buildings.village * 8;
+      inc += p.buildings.school * 7;
+      inc += p.buildings.port * 12;
+      inc += p.buildings.farm * 6;
 
-    function now(){ return Date.now(); }
-    function fmtClock(ms){
-      const s = Math.floor(ms/1000);
-      const hh = String(Math.floor(s/3600)).padStart(2,"0");
-      const mm = String(Math.floor((s%3600)/60)).padStart(2,"0");
-      const ss = String(s%60).padStart(2,"0");
-      return `${hh}:${mm}:${ss}`;
-    }
+      // governor reduces income but increases stability (already applied when granted)
+      if(p.governorChildId) inc *= 0.86;
 
-    function ownedCount(ownerId){
-      let c=0; for(const p of provinces) if(p.owner===ownerId) c++;
-      return c;
+      // coastal bonus with port
+      if(p.coastal && p.buildings.port>0) inc += 6;
+
+      return inc;
     }
 
     function computeIncomePM(ownerId){
       const st = states.get(ownerId);
       if(!st) return 0;
+      let inc = CFG.baseIncomePM;
 
-      let base = 0;
       for(const p of provinces){
         if(p.owner !== ownerId) continue;
-
-        // base from resources + market buildings
-        base += 2 + p.resources.length * 0.4;
-        base += p.buildings.market * 6;
-        base += p.buildings.farm * 4;
-        base += p.buildings.barracks * 1.5;
-        // forts no income
+        inc += incomeFromProvince(p, st);
       }
 
-      // gear improves economy a bit
-      base *= (1 + st.gear * 0.003);
+      // slight scaling with territory
+      inc += Math.sqrt(ownedCount(ownerId))*3;
 
-      return Math.round(base);
+      return Math.round(inc);
     }
 
+    function processEconomy(){
+      Market.step();
+      for(const [id, st] of states.entries()){
+        st.incomePM = computeIncomePM(id);
+
+        // add gold each econ tick
+        st.gold += (st.incomePM/60) * CFG.econEvery;
+
+        // upkeep (army huge)
+        const upkeepPerSec = (st.army * CFG.upkeepPerSoldierPerMin) / 60;
+        st.gold -= upkeepPerSec * CFG.econEvery;
+
+        // supply
+        const supUsePerSec = (st.army * CFG.supplyUsePerSoldierPerMin) / 60;
+        st.supply = clamp(st.supply - supUsePerSec * CFG.econEvery + (ownedCount(id)*0.08), 0, 100);
+
+        // stability drift
+        const expansionPressure = Math.max(0, ownedCount(id)-2) * 0.010;
+        const supplyPenalty = (st.supply < 25) ? (25 - st.supply) * 0.013 : 0;
+        const warPenalty = (st.warHeat/100) * 0.05;
+        st.stab = clamp(st.stab - (expansionPressure + supplyPenalty + warPenalty) + 0.05, 0, 100);
+
+        // cool down war heat
+        st.warHeat = clamp(st.warHeat - 0.7, 0, 100);
+      }
+    }
+
+    function processRevolts(){
+      for(const [id, st] of states.entries()){
+        if(st.stab > 26) continue;
+        const owned = provinces.filter(p=>p.owner===id && !p.capital);
+        if(!owned.length) continue;
+        const chance = CFG.revoltBase + (26 - st.stab)*0.0025;
+        if(Math.random() < chance){
+          const p = owned[(Math.random()*owned.length)|0];
+          p.owner = null;
+          p.governorChildId = null;
+          p.buildings.market = Math.max(0, p.buildings.market-1);
+          p.buildings.city = Math.max(0, p.buildings.city-1);
+          st.stab = clamp(st.stab + 4, 0, 100);
+          if(id===playerId){
+            log("🧨 تمرد! فقدت إقليم.");
+            setStatus("تمرد");
+          }
+        }
+      }
+    }
+
+    /* ========= Stability tint (natural/orange/red) ========= */
     function updateTint(){
       const st = states.get(playerId);
-      if(!st){ ui.tint.style.background = "transparent"; return; }
-      // stability-based tint
-      if(st.stab >= 65){
-        ui.tint.style.background = "transparent";
-      }else if(st.stab >= 35){
-        ui.tint.style.background = "rgba(255,165,0,.08)"; // orange warning
-      }else{
-        ui.tint.style.background = "rgba(255,0,0,.10)"; // red danger
-      }
+      if(!st){ ui.tint.style.background="transparent"; return; }
+      if(st.stab >= 65) ui.tint.style.background = "transparent";
+      else if(st.stab >= 35) ui.tint.style.background = "rgba(255,165,0,.08)";
+      else ui.tint.style.background = "rgba(255,0,0,.10)";
     }
 
-    function updateBars(){
+    function updateHUD(){
       const st = states.get(playerId);
       if(!st){
-        ui.stabFill.style.width = "0%";
-        ui.supFill.style.width = "0%";
-        ui.warFill.style.width = "0%";
-        ui.warText.textContent = "—";
+        ui.pName.textContent="—"; ui.rName.textContent="—";
+        ui.gold.textContent="0"; ui.inc.textContent="0";
+        ui.stabNum.textContent="0"; ui.supNum.textContent="0";
+        ui.stabFill.style.width="0%"; ui.supFill.style.width="0%"; ui.warFill.style.width="0%";
+        ui.warText.textContent="—";
         return;
       }
+      ui.pName.textContent = `${st.name} ${st.emblem}`;
+      ui.rName.textContent = `${st.ruler} — ${st.house}`;
+      ui.gold.textContent = st.gold.toFixed(0);
+      ui.inc.textContent = st.incomePM.toFixed(0);
+      ui.stabNum.textContent = st.stab.toFixed(0);
+      ui.supNum.textContent = st.supply.toFixed(0);
+
       const stab = clamp(st.stab,0,100);
-      const sup  = clamp(st.supply,0,100);
-      const war  = clamp(st.warHeat,0,100);
+      const sup = clamp(st.supply,0,100);
+      const war = clamp(st.warHeat,0,100);
 
       ui.stabFill.style.width = stab + "%";
       ui.supFill.style.width = sup + "%";
@@ -1617,319 +1762,71 @@
       ui.stabFill.className = "fill " + (stab>60?"ok":stab>35?"warn":"danger");
       ui.supFill.className  = "fill " + (sup>60?"ok":sup>35?"warn":"danger");
       ui.warFill.className  = "fill " + (war<25?"ok":war<55?"warn":"danger");
+      ui.warText.textContent = war<25 ? "سلام" : war<55 ? "توتر" : "حرب";
 
-      ui.warText.textContent = war<25 ? "Peace / سلام" : war<55 ? "Tension / توتر" : "War / حرب";
       updateTint();
-    }
-
-    function updateHUD(){
-      const st = states.get(playerId);
-      if(!st){
-        ui.pName.textContent = "—";
-        ui.rName.textContent = "—";
-        ui.gold.textContent = "0";
-        ui.pop.textContent = "0";
-        ui.army.textContent = "0";
-        ui.inc.textContent = "0";
-        updateBars();
-        return;
-      }
-
-      ui.pName.textContent = st.name;
-      ui.rName.textContent = st.ruler ?? "—";
-      ui.gold.textContent = st.gold.toFixed(0);
-      ui.pop.textContent = st.pop.toFixed(0);
-      ui.army.textContent = st.army.toFixed(0);
-      ui.inc.textContent = st.incomePM.toFixed(0);
-
-      updateBars();
     }
 
     function applyHints(){
       const st = states.get(playerId);
-      if(!st) return;
+      if(!st){ ui.hintBox.style.display="none"; return; }
 
       const owned = ownedCount(playerId);
-      if(owned < 4 && st.gold > 80){
-        ui.hintBox.style.display = "block";
-        ui.hintTitle.textContent = (LANG==="ar") ? "تلميح:" : "Hint:";
-        ui.hintText.textContent = (LANG==="ar")
-          ? "ابنِ سوق + مزارع. انتظر اكتمال البناء قبل ما تتوسع."
-          : "Build Market + Farms. Let construction finish before expanding.";
+      if(owned < 4){
+        ui.hintBox.style.display="block";
+        ui.hintTitle.textContent="تلميح:";
+        ui.hintText.textContent="ابدأ بسوق + قرية/مدينة لرفع الدخل تلقائياً، ثم ثكنة للتجنيد.";
       } else if(st.stab < 40){
-        ui.hintBox.style.display = "block";
-        ui.hintTitle.textContent = (LANG==="ar") ? "تحذير:" : "Warning:";
-        ui.hintText.textContent = (LANG==="ar")
-          ? "الاستقرار منخفض! قلل الحروب، زد المؤن، وابنِ حصن/ثكنة."
-          : "Low stability! Slow wars, raise supply, build Fort/Barracks.";
+        ui.hintBox.style.display="block";
+        ui.hintTitle.textContent="تحذير:";
+        ui.hintText.textContent="الاستقرار منخفض! ابنِ مدارس/مدن وزّع حكم نيابي للأبناء لتثبيت السيطرة.";
       } else if(st.supply < 30){
-        ui.hintBox.style.display = "block";
-        ui.hintTitle.textContent = (LANG==="ar") ? "تحذير:" : "Warning:";
-        ui.hintText.textContent = (LANG==="ar")
-          ? "المؤن قليلة! المزارع تزيد المؤن، وتجنب حصار طويل."
-          : "Low supply! Farms raise supply; avoid long sieges.";
+        ui.hintBox.style.display="block";
+        ui.hintTitle.textContent="تحذير:";
+        ui.hintText.textContent="المؤن قليلة! ابنِ مزارع قبل حصار جديد.";
       } else {
-        ui.hintBox.style.display = "none";
+        ui.hintBox.style.display="none";
       }
     }
 
-    function processEconomyAndUpkeep(){
-      // market drift
-      Market.step();
-
-      for(const [id, st] of states.entries()){
-        // income
-        st.incomePM = computeIncomePM(id);
-        st.gold += st.incomePM / 12; // per 5s approx (handled by econEvery)
-        st.pop  += Math.max(0.02, st.incomePM/20000);
-
-        // upkeep per minute => per econ tick
-        const upkeepPerSec = (st.army * CFG.upkeepPerSoldierPerMin) / 60;
-        st.gold -= upkeepPerSec * CFG.econEvery;
-
-        // supply use
-        const supUsePerSec = (st.army * CFG.supplyUsePerSoldierPerMin) / 60;
-        st.supply = clamp(st.supply - supUsePerSec * CFG.econEvery + (ownedCount(id)*0.06), 0, 100);
-
-        // stability drift
-        const owned = ownedCount(id);
-        const expansionPressure = Math.max(0, owned-2) * 0.010;
-        const supplyPenalty = (st.supply < 25) ? (25 - st.supply) * 0.015 : 0;
-        const warPenalty = (st.warHeat/100) * 0.06;
-        st.stab = clamp(st.stab - (expansionPressure + supplyPenalty + warPenalty) + 0.03, 0, 100);
-
-        // low supply attrition
-        if(st.supply < 12 && Math.random()<0.25){
-          st.army = Math.max(0, st.army - 1);
-        }
-
-        // war heat cool down slowly
-        st.warHeat = clamp(st.warHeat - 0.9, 0, 100);
-      }
-    }
-
-    function processRevolts(){
-      for(const [id, st] of states.entries()){
-        if(st.stab > 28) continue;
-        const owned = provinces.filter(p=>p.owner===id && !p.capital);
-        if(!owned.length) continue;
-
-        // every 10s there is a chance
-        const chance = CFG.revoltBase + (28 - st.stab)*0.003;
-        if(Math.random() < chance){
-          const p = owned[(Math.random()*owned.length)|0];
-          p.owner = null;
-          p.capital = false;
-          p.buildings.market = Math.max(0, p.buildings.market-1);
-          p.buildings.farm = Math.max(0, p.buildings.farm-1);
-          st.stab = clamp(st.stab + 4, 0, 100);
-
-          if(id===playerId){
-            log(`🧨 Revolt! Lost province near ${p.name}.`);
-            setStatus("Revolt!");
-          }
-        }
-      }
-    }
-
-    function findPlayerCapital(){
-      return provinces.find(p=>p.owner===playerId && p.capital);
-    }
-
-    function checkLoseWin(){
-      const st = states.get(playerId);
-      if(!st || !gameStartAt) return;
-
-      // lose: capital gone
-      const cap = findPlayerCapital();
-      if(!cap){
-        gameOver(false, t("loseCapital"));
-        return;
-      }
-
-      // lose: bankruptcy time
-      if(st.gold < 0){
-        st.debtSec += CFG.tickMs/1000;
-        if(st.debtSec >= CFG.bankruptLoseSeconds){
-          gameOver(false, t("loseBankrupt"));
-          return;
-        }
-      } else {
-        st.debtSec = 0;
-      }
-
-      // lose: stability collapse time
-      if(st.stab <= 0){
-        st.collapseSec += CFG.tickMs/1000;
-        if(st.collapseSec >= CFG.collapseLoseSeconds){
-          gameOver(false, t("loseCollapse"));
-          return;
-        }
-      } else {
-        st.collapseSec = 0;
-      }
-
-      // win: hard
-      const elapsed = (now() - gameStartAt)/1000;
-      const owned = ownedCount(playerId);
-      if(elapsed >= CFG.winMinSeconds && owned >= CFG.winProvinces && st.stab >= CFG.winMinStab){
-        gameOver(true, t("win"));
-      }
-    }
-
-    function gameOver(win, reason){
-      running = false;
-      setStatus(win ? "Victory" : "Defeat");
-      log(reason);
-      alert(reason);
-    }
-
-    /* =========================
-       Combat: Raid & Siege
-       - Raid: loot, no capture
-       - Siege: starts timer, ends with capture if attacker holds
-       ========================= */
-    function isAdjacentToPlayer(target){
-      const owned = provinces.filter(p=>p.owner===playerId);
-      return owned.some(p=>p.neighbors.has(target.id));
-    }
-
-    function raid(target){
-      const st = states.get(playerId);
-      if(!st) return;
-      if(!target || target.owner===playerId){ return; }
-      if(!isAdjacentToPlayer(target)){ log("⚠️ Must be adjacent."); return; }
-      if(st.army < 40){ log("⚠️ Army too small for raid."); return; }
-
-      const cost = 35;
-      if(st.gold < cost){ log("⚠️ Gold too low."); return; }
-      st.gold -= cost;
-
-      // loot based on resources + markets
-      const loot = Math.round(40 + target.resources.length*10 + target.buildings.market*30) * (0.8 + Math.random()*0.5);
-      st.gold += loot;
-      st.warHeat = clamp(st.warHeat + 12, 0, 100);
-      st.stab = clamp(st.stab - 1.5, 0, 100);
-
-      const from = provinces.find(p=>p.owner===playerId && p.neighbors.has(target.id)) || findPlayerCapital();
-      if(from) animateMove(playerId, from.id, target.id, "raid");
-
-      log(t("raidDone", loot|0));
-      setStatus("Raid");
-    }
-
-    function startSiege(target){
-      const st = states.get(playerId);
-      if(!st) return;
-      if(!target || target.owner===playerId){ return; }
-      if(!isAdjacentToPlayer(target)){ log("⚠️ Must be adjacent."); return; }
-
-      if(st.army < 65){ log("⚠️ Need larger army for siege."); return; }
-      if(st.supply < 35){ log("⚠️ Need more supply before siege."); return; }
-
-      const cost = 55;
-      if(st.gold < cost){ log("⚠️ Gold too low."); return; }
-      st.gold -= cost;
-
-      // siege duration depends on fort
-      const fortBonus = target.buildings.fort > 0 ? CFG.siegeFortBonusSeconds : 0;
-      const duration = CFG.siegeBaseSeconds + fortBonus + (target.buildings.market*25);
-
-      const startedAt = now();
-      const endsAt = startedAt + duration*1000;
-      target.siege = {attackerId: playerId, startedAt, endsAt, active:true};
-
-      st.warHeat = clamp(st.warHeat + 18, 0, 100);
-      st.stab = clamp(st.stab - 3, 0, 100);
-
-      const from = provinces.find(p=>p.owner===playerId && p.neighbors.has(target.id)) || findPlayerCapital();
-      if(from) animateMove(playerId, from.id, target.id, "siege");
-
-      log(t("siegeStart"));
-      setStatus("Siege");
-    }
-
-    function processSieges(){
-      const ts = now();
-      for(const p of provinces){
-        if(!p.siege || !p.siege.active) continue;
-        if(ts >= p.siege.endsAt){
-          // capture if attacker still exists
-          const atk = states.get(p.siege.attackerId);
-          if(!atk){ p.siege.active=false; continue; }
-          // if province already changed owner, cancel
-          if(p.owner === p.siege.attackerId){ p.siege.active=false; continue; }
-
-          // resolve capture (harder if defender strong)
-          const def = p.owner ? states.get(p.owner) : null;
-          const defPow = def ? (def.army*0.25 + def.gear*0.5) : 12;
-          const atkPow = atk.army*0.30 + atk.gear*0.7 + Math.random()*20;
-
-          if(atkPow > defPow){
-            // capture
-            const prev = p.owner;
-            p.owner = p.siege.attackerId;
-            p.capital = false;
-            p.siege.active = false;
-
-            // penalties
-            atk.army = Math.max(0, atk.army - (6 + (Math.random()*8|0)));
-            atk.supply = clamp(atk.supply - 10, 0, 100);
-            atk.stab = clamp(atk.stab - (3 + CFG.stabilityExpandPenalty), 0, 100);
-            atk.warHeat = clamp(atk.warHeat + 8, 0, 100);
-
-            if(def){
-              def.army = Math.max(0, def.army - (4 + (Math.random()*6|0)));
-              def.stab = clamp(def.stab - 3, 0, 100);
-              def.warHeat = clamp(def.warHeat + 6, 0, 100);
-            }
-
-            log(t("conquerDone") + ` (${p.name})`);
-            setStatus("Captured!");
-            refreshIcons();
-          }else{
-            // fail -> siege breaks
-            p.siege.active = false;
-            atk.army = Math.max(0, atk.army - (4 + (Math.random()*5|0)));
-            atk.stab = clamp(atk.stab - 1.2, 0, 100);
-            log(t("conquerFail") + ` (${p.name})`);
-            setStatus("Siege failed");
-          }
-        }
-      }
-    }
-
-    /* =========================
-       AI (Global)
-       - expands slowly but persistently, prefers player border if enemy
-       ========================= */
+    /* ========= AI (balanced + fights each other sometimes) ========= */
     function aiStep(){
-      for(const [id, st] of states.entries()){
-        if(st.isPlayer) continue;
+      // chance for inter-AI wars
+      const ids = Array.from(states.keys()).filter(id=>id!==playerId);
+      if(ids.length>2 && Math.random()<0.28){
+        // pick two AIs and set enemy relation for short
+        const a = ids[(Math.random()*ids.length)|0];
+        let b = ids[(Math.random()*ids.length)|0];
+        while(b===a) b = ids[(Math.random()*ids.length)|0];
+        setRelation(a,b,-0.9);
+      }
 
-        // build sometimes
-        if(Math.random() < 0.18){
+      for(const [id, st] of states.entries()){
+        if(id===playerId) continue;
+
+        // build occasionally
+        if(Math.random()<0.22){
           const owned = provinces.filter(p=>p.owner===id);
           if(owned.length){
             const p = owned[(Math.random()*owned.length)|0];
-            // queue small instant-ish (AI simplified)
-            if(st.gold > 140 && p.buildings.market < 2){ st.gold -= 120; p.buildings.market += 1; }
-            else if(st.gold > 100 && p.buildings.farm < 2){ st.gold -= 90; p.buildings.farm += 1; }
-            else if(st.gold > 180 && p.buildings.fort < 1){ st.gold -= 220; p.buildings.fort += 1; }
+            if(st.gold>180 && p.buildings.market<2){ st.gold-=CFG.costs.market; p.buildings.market++; st.incomePM+=10; }
+            else if(st.gold>140 && p.buildings.village<2){ st.gold-=CFG.costs.village; p.buildings.village++; st.incomePM+=7; }
+            else if(st.gold>200 && p.buildings.barracks<2){ st.gold-=CFG.costs.barracks; p.buildings.barracks++; st.recruitCap+=2000; }
+            else if(st.gold>220 && p.coastal && p.buildings.port<1){ st.gold-=CFG.costs.port; p.buildings.port++; st.incomePM+=9; }
           }
         }
 
-        // recruit
-        if(st.gold > 120 && Math.random() < 0.22){
-          st.gold -= 80;
-          st.army += 16 + (Math.random()*10|0);
-          st.supply = clamp(st.supply - 6, 0, 100);
+        // recruit to keep parity
+        if(st.gold>160 && st.army < st.recruitCap && Math.random()<0.24){
+          st.gold -= 120;
+          st.army += 500 + (Math.random()*700|0);
+          st.supply = clamp(st.supply - 2, 0, 100);
         }
 
         const owned = provinces.filter(p=>p.owner===id);
         if(!owned.length) continue;
 
-        // frontier
+        // frontier targets
         const frontier = [];
         for(const p of owned){
           for(const nid of p.neighbors){
@@ -1941,31 +1838,29 @@
         }
         if(!frontier.length) continue;
 
-        // prefer attacking player if enemy relation
-        frontier.sort((a,b)=>{
-          const ap = a.to.owner===playerId ? -1 : 0;
-          const bp = b.to.owner===playerId ? -1 : 0;
-          return ap-bp;
-        });
+        // decide attack sometimes (prefer enemies)
+        if(Math.random()>0.18) continue;
 
-        // decide
-        const pick = frontier[(Math.random()*Math.min(frontier.length, 22))|0];
+        const pick = frontier[(Math.random()*Math.min(frontier.length, 18))|0];
         const to = pick.to;
-        if(st.army < 50 || st.gold < 40) continue;
 
-        const targetIsPlayer = (to.owner === playerId);
-        const rel = targetIsPlayer && playerId ? (states.get(playerId)?.relations.get(id) ?? 0) : 0;
-        const aggressive = targetIsPlayer ? (rel <= -0.4 ? 0.55 : 0.25) : 0.18;
-        if(Math.random() > aggressive) continue;
+        // choose if should attack based on relations (if owner exists)
+        let rel = 0;
+        if(to.owner){
+          rel = st.relations.get(to.owner) ?? 0;
+        }
+        const attackChance = to.owner ? (rel<=-0.5 ? 0.75 : 0.25) : 0.40;
+        if(Math.random() > attackChance) continue;
 
-        // attack as siege-lite (fast AI)
-        st.gold -= 35;
-        st.warHeat = clamp(st.warHeat + 10, 0, 100);
+        if(st.army < 6500 || st.gold < 70) continue;
+
+        st.gold -= 60;
+        st.warHeat = clamp(st.warHeat + 12, 0, 100);
 
         const def = to.owner ? states.get(to.owner) : null;
-        const defPow = def ? (def.army*0.26 + def.gear*0.5) : 12;
-        const fort = to.buildings.fort>0 ? 10 : 0;
-        const atkPow = st.army*0.30 + st.gear*0.6 + (Math.random()*18) - fort;
+        const fort = to.buildings.fort>0 ? 0.22 : 0;
+        const atkPow = st.army*(0.18 + Math.random()*0.05);
+        const defPow = (def ? def.army*(0.16 + Math.random()*0.04) : 4500) * (1+fort);
 
         animateMove(id, pick.from.id, to.id, "attack");
 
@@ -1973,561 +1868,112 @@
           const prev = to.owner;
           to.owner = id;
           to.capital = false;
-          st.army = Math.max(0, st.army - (5 + (Math.random()*7|0)));
-          st.stab = clamp(st.stab - 1.6, 0, 100);
-          st.supply = clamp(st.supply - 6, 0, 100);
+          to.governorChildId = null;
+          st.army = Math.max(0, st.army - (600 + (Math.random()*800|0)));
+          st.stab = clamp(st.stab - 1.2, 0, 100);
+
           if(def){
-            def.army = Math.max(0, def.army - (3 + (Math.random()*5|0)));
+            def.army = Math.max(0, def.army - (500 + (Math.random()*700|0)));
+            def.stab = clamp(def.stab - 1.2, 0, 100);
             def.warHeat = clamp(def.warHeat + 10, 0, 100);
-            def.stab = clamp(def.stab - 1.4, 0, 100);
           }
           if(prev === playerId){
-            log(`⚠️ Enemy captured ${to.name}!`);
-            setStatus("Under attack!");
+            log("⚠️ دولة معادية ضمّت إقليم منك!");
+            setStatus("تحت هجوم");
           }
         }else{
-          st.army = Math.max(0, st.army - (3 + (Math.random()*5|0)));
-          if(def) def.warHeat = clamp(def.warHeat + 6, 0, 100);
+          st.army = Math.max(0, st.army - (450 + (Math.random()*650|0)));
         }
       }
-    }
-
-    /* =========================
-       Start / Restart World
-       ========================= */
-    function clearGame(){
-      states.clear();
-      playerId = null;
-      gameStartAt = null;
-      tick = 0; econTick = 0; aiTick = 0;
-      ui.log.innerHTML = "";
-      setStatus(t("startHint"));
-      updateHUD();
       refreshIcons();
       refreshProvincesStyle();
-      refreshSelectionUI();
-      updateTint();
     }
 
-    function createAIs(count=9){
-      for(let i=0;i<count;i++){
-        const id = "A"+i;
-        const hue = (18 + i*34) % 360;
-        const name = ["Sultanate","Kingdom","Emirate","Duchy","Khanate","Republic","Principality"][i%7] + " " + ["North","East","South","West","Central"][i%5];
-        states.set(id, {
-          id,
-          name,
-          hue,
-          isPlayer:false,
-          ruler:"AI",
-          gold: 320 + (Math.random()*180|0),
-          pop: 900 + (Math.random()*500|0),
-          army: 80 + (Math.random()*70|0),
-          gear: (Math.random()*18|0),
-          stab: 65 + (Math.random()*20|0),
-          supply: 65 + (Math.random()*20|0),
-          incomePM: 0,
-          debtSec: 0,
-          collapseSec: 0,
-          warHeat: 0,
-          stock: new Map(),
-          relations: new Map(),
-        });
-      }
-      // initialize relations for AIs later after player created too
+    /* ========= Loss/Win ========= */
+    function findPlayerCapital(){
+      return provinces.find(p=>p.owner===playerId && p.capital);
     }
 
-    function assignAIProvinces(){
-      // give each AI a capital + 2 nearby provinces
-      const pool = provinces.slice().sort(()=>Math.random()-0.5);
-      let idx = 0;
-      for(const [id, st] of states.entries()){
-        if(st.isPlayer) continue;
-        // find free province
-        while(idx < pool.length && pool[idx].owner) idx++;
-        const cap = pool[idx++];
-        if(!cap) break;
-        cap.owner = id;
-        cap.capital = true;
-        cap.buildings.market = 1;
-        cap.buildings.farm = 1;
-        cap.buildings.fort = 1;
+    function checkLoseWin(){
+      const st = states.get(playerId);
+      if(!st || !gameStartAt) return;
 
-        // nearby
-        const ns = [...cap.neighbors].sort(()=>Math.random()-0.5).slice(0,3);
-        for(const nid of ns){
-          const p = provinces.find(x=>x.id===nid);
-          if(p && !p.owner){
-            p.owner = id;
-            p.capital = false;
-            if(Math.random()<0.4) p.buildings.farm = 1;
-          }
-        }
-
-        // stock some random goods
-        for(let k=0;k<20;k++){
-          const r = RES.list[(Math.random()*RES.list.length)|0].id;
-          st.stock.set(r, (st.stock.get(r)||0) + (10 + (Math.random()*30|0)));
-        }
-      }
-    }
-
-    /* =========================
-       Founding flow
-       ========================= */
-    const modalBack = $("modalBack");
-    const inRuler = $("inRuler");
-    const inState = $("inState");
-    const inColor = $("inColor");
-
-    function openFoundingModal(){
-      modalBack.style.display = "flex";
-      inRuler.value = "";
-      inState.value = "";
-    }
-    function closeFoundingModal(){
-      modalBack.style.display = "none";
-    }
-
-    $("btnCancel").onclick = ()=>{
-      closeFoundingModal();
-      setStatus(t("startHint"));
-    };
-
-    $("btnStart").onclick = ()=>{
-      const ruler = (inRuler.value||"").trim();
-      const stateName = (inState.value||"").trim();
-      if(!selectedProv && selectedProv !== 0){ alert("Select a province first."); return; }
-      if(!ruler || !stateName){ alert("Enter names."); return; }
-
-      // create player
-      playerId = "P";
-      const hue = Number(inColor.value);
-      states.set(playerId, {
-        id: playerId,
-        name: stateName,
-        hue,
-        isPlayer:true,
-        ruler,
-        gold: 420,
-        pop: 900,
-        army: 70,
-        gear: 10,
-        stab: 72,
-        supply: 70,
-        incomePM: 0,
-        debtSec: 0,
-        collapseSec: 0,
-        warHeat: 0,
-        stock: new Map(),
-        relations: new Map(),
-      });
-
-      // init market and give starting stock
-      for(let i=0;i<30;i++){
-        const r = RES.list[(Math.random()*RES.list.length)|0].id;
-        states.get(playerId).stock.set(r, (states.get(playerId).stock.get(r)||0) + (20 + (Math.random()*40|0)));
-      }
-
-      // claim capital + one adjacent
-      for(const p of provinces){ if(p.owner===playerId){ p.owner=null; p.capital=false; } }
-      const cap = provinces.find(p=>p.id===selectedProv);
-      if(!cap || cap.owner){ alert("Choose a free province."); return; }
-      cap.owner = playerId;
-      cap.capital = true;
-      cap.buildings.market = 0;
-      cap.buildings.farm = 0;
-      cap.buildings.fort = 0;
-
-      const neigh = [...cap.neighbors].filter(nid=>{
-        const p = provinces.find(x=>x.id===nid);
-        return p && !p.owner;
-      }).slice(0,1);
-      if(neigh[0]!=null){
-        provinces.find(x=>x.id===neigh[0]).owner = playerId;
-      }
-
-      // init relations for all
-      for(const [id] of states.entries()) initRelationsFor(id);
-      // set some random relations
-      for(const [id] of states.entries()){
-        if(id===playerId) continue;
-        // randomize: most neutral, some enemies
-        const r = Math.random();
-        setRelation(playerId, id, r<0.18 ? -0.85 : r<0.30 ? 0.75 : 0);
-      }
-
-      closeFoundingModal();
-      gameStartAt = now();
-      log(t("founded", stateName, ruler));
-      setStatus("Build → Recruit → Trade → Expand");
-      refreshIcons();
-      refreshProvincesStyle();
-      refreshSelectionUI();
-      refreshDiplomacyUI();
-      updateHUD();
-    };
-
-    /* =========================
-       Province click / selection
-       ========================= */
-    function onProvinceClick(id){
-      selectedProv = id;
-      refreshSelectionUI();
-      refreshProvincesStyle();
-
-      const p = provinces.find(x=>x.id===id);
-      if(!p) return;
-
-      if(!playerId){
-        if(!p.owner){
-          openFoundingModal();
-          setStatus("Name your state & ruler");
-        } else {
-          setStatus("Choose a free province");
-        }
-      }
-    }
-
-    function refreshSelectionUI(){
-      const p = provinces.find(x=>x.id===selectedProv);
-      if(!p){
-        ui.selLabel.textContent = "—";
-        ui.selOwner.textContent = "—";
-        ui.selInfo.textContent = "—";
+      const cap = findPlayerCapital();
+      if(!cap){
+        gameOver(false, "💀 خسرت! سقطت العاصمة.");
         return;
       }
 
-      const owner = p.owner ? (states.get(p.owner)?.name ?? p.owner) : (LANG==="ar"?"حر":"Free");
-      ui.selLabel.textContent = `${p.name}`;
-      ui.selOwner.textContent = owner;
+      if(st.gold < 0){
+        st.debtSec += CFG.tickMs/1000;
+        if(st.debtSec >= CFG.bankruptLoseSeconds){
+          gameOver(false, "💀 خسرت! الإفلاس طال كثيرًا.");
+          return;
+        }
+      } else st.debtSec = 0;
 
-      const resNames = p.resources.slice(0,8).map(id=>RES.byId.get(id)?.name?.split("/")[0]?.trim() ?? id);
-      const extra = Math.max(0, p.resources.length - 8);
-      const resText = resNames.join(", ") + (extra?` +${extra}`:"");
+      if(st.stab <= 0){
+        st.collapseSec += CFG.tickMs/1000;
+        if(st.collapseSec >= CFG.collapseLoseSeconds){
+          gameOver(false, "💀 خسرت! انهيار الاستقرار.");
+          return;
+        }
+      } else st.collapseSec = 0;
 
-      // build status
-      const build = p.buildQueue.map(b=>{
-        const remain = Math.max(0, Math.ceil((b.endsAt - now())/1000));
-        return `${buildLabel(b.type)}: ${Math.ceil(remain/60)}m`;
-      });
-
-      // siege status
-      const siege = p.siege?.active
-        ? ` | SIEGE: ${Math.ceil((p.siege.endsAt-now())/1000/60)}m`
-        : "";
-
-      ui.selInfo.textContent =
-        `Climate: ${p.climate} | Resources: ${resText} | Buildings: M${p.buildings.market} F${p.buildings.farm} B${p.buildings.barracks} Ft${p.buildings.fort}` +
-        (build.length ? ` | Build: ${build.join(" • ")}` : "") +
-        siege;
-    }
-
-    /* =========================
-       Buttons: Build / Recruit / Equip / Trade units / Combat
-       ========================= */
-    function requirePlayer(){
-      if(!playerId){ alert("Start by founding a state."); return false; }
-      return true;
-    }
-    function selectedProvince(){
-      return provinces.find(x=>x.id===selectedProv);
-    }
-    function requireOwnedProv(){
-      const p = selectedProvince();
-      if(!p || p.owner!==playerId){ log(t("needOwned")); return null; }
-      return p;
-    }
-
-    $("btnBuildMarket").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      queueBuild(p, "market");
-    };
-    $("btnBuildFarm").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      queueBuild(p, "farm");
-    };
-    $("btnBuildBarracks").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      queueBuild(p, "barracks");
-    };
-    $("btnBuildFort").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      queueBuild(p, "fort");
-    };
-
-    $("btnRecruit").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const st = states.get(playerId);
-      const p = requireOwnedProv(); if(!p) return;
-
-      // recruit requires barracks OR more expensive
-      const hasBarracks = p.buildings.barracks > 0;
-      const cost = hasBarracks ? 90 : 140;
-      if(st.gold < cost){ log("⚠️ Gold too low."); return; }
-
-      st.gold -= cost;
-      const add = hasBarracks ? (24 + p.buildings.barracks*6) : 18;
-      st.army += add;
-      st.supply = clamp(st.supply - 8, 0, 100);
-      st.warHeat = clamp(st.warHeat + 2, 0, 100);
-      log(`🪖 +${add} troops`);
-    };
-
-    $("btnEquip").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const st = states.get(playerId);
-      const cost = 160;
-      if(st.gold < cost){ log("⚠️ Gold too low."); return; }
-      st.gold -= cost;
-      st.gear += 10;
-      st.stab = clamp(st.stab + 0.5, 0, 100);
-      log("🛡️ Gear +10");
-    };
-
-    // Caravan / Ship creation uses a quick picker:
-    let tradePick = {from:null, to:null, res:"wheat", qty:15};
-
-    $("btnCaravan").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      // first click sets from, second sets to (also owned)
-      if(tradePick.from == null){
-        tradePick.from = p.id;
-        log("🐪 Caravan: now select another OWNED province as destination.");
-        return;
+      const elapsed = (now()-gameStartAt)/1000;
+      if(elapsed >= CFG.winMinSeconds && ownedCount(playerId) >= CFG.winProvinces && st.stab >= CFG.winMinStab){
+        gameOver(true, "🏆 فزت! سيطرة قوية ومتوازنة.");
       }
-      if(tradePick.to == null){
-        tradePick.to = p.id;
-        // pick a resource that exists in stock
-        const st = states.get(playerId);
-        const first = Array.from(st.stock.keys())[0] || "wheat";
-        tradePick.res = first;
-        tradePick.qty = 15;
-        Traders.create("caravan", tradePick.from, tradePick.to, tradePick.res, tradePick.qty);
-        log(t("caravanCreated"));
-        tradePick.from = null; tradePick.to = null;
-      }
-    };
-
-    $("btnFleet").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = requireOwnedProv(); if(!p) return;
-      if(tradePick.from == null){
-        tradePick.from = p.id;
-        log("⛵ Ship: now select another OWNED province as destination.");
-        return;
-      }
-      if(tradePick.to == null){
-        tradePick.to = p.id;
-        const st = states.get(playerId);
-        const first = Array.from(st.stock.keys())[0] || "timber";
-        tradePick.res = first;
-        tradePick.qty = 12;
-        Traders.create("ship", tradePick.from, tradePick.to, tradePick.res, tradePick.qty);
-        log(t("shipCreated"));
-        tradePick.from = null; tradePick.to = null;
-      }
-    };
-
-    $("btnRaid").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = selectedProvince(); if(!p) return;
-      raid(p);
-    };
-
-    $("btnSiege").onclick = ()=>{
-      if(!requirePlayer()) return;
-      const p = selectedProvince(); if(!p) return;
-      startSiege(p);
-    };
-
-    /* =========================
-       Map modes
-       ========================= */
-    function setMode(m){
-      MAP_MODE = m;
-      refreshProvincesStyle();
-    }
-    $("modeNormal").onclick = ()=>setMode("normal");
-    $("modeClimate").onclick = ()=>setMode("climate");
-    $("modeRelations").onclick = ()=>setMode("relations");
-    $("modeEconomy").onclick = ()=>setMode("economy");
-    $("modeResources").onclick = ()=>setMode("resources");
-
-    /* =========================
-       Market UI
-       ========================= */
-    let marketSelected = null;
-
-    function openMarket(){
-      $("marketBack").style.display = "flex";
-      renderMarketList();
-    }
-    function closeMarket(){ $("marketBack").style.display = "none"; }
-
-    $("btnMarket").onclick = openMarket;
-    $("marketClose").onclick = closeMarket;
-
-    function renderMarketList(){
-      const st = states.get(playerId);
-      const q = ($("marketSearch").value || "").toLowerCase().trim();
-      const f = $("marketFilter").value;
-
-      const rows = [];
-      const items = RES.list
-        .filter(r => f==="all" ? true : r.cat===f)
-        .filter(r => {
-          if(!q) return true;
-          return r.name.toLowerCase().includes(q) || r.id.toLowerCase().includes(q);
-        })
-        .slice(0, 120);
-
-      for(const r of items){
-        const price = Market.prices.get(r.id) ?? r.basePrice;
-        const have = st ? (st.stock.get(r.id) ?? 0) : 0;
-        const pick = (marketSelected === r.id);
-        rows.push(`
-          <div data-id="${r.id}" style="display:flex; justify-content:space-between; align-items:center; gap:10px;
-            padding:8px; border:1px solid var(--stroke); border-radius:12px; margin-bottom:8px;
-            background:${pick ? "color-mix(in oklab, var(--accent) 12%, transparent)" : "transparent"};">
-            <div>
-              <b>${escapeHtml(r.name)}</b>
-              <div style="color:var(--muted); font-size:11px">cat: ${r.cat} • price: <b>${price}</b> • you: <b>${have}</b></div>
-            </div>
-            <span class="pill">${r.id}</span>
-          </div>
-        `);
-      }
-      $("marketList").innerHTML = rows.join("") || "—";
-
-      $("marketList").querySelectorAll("[data-id]").forEach(div=>{
-        div.onclick = ()=>{
-          marketSelected = div.getAttribute("data-id");
-          $("marketPick").textContent = RES.byId.get(marketSelected)?.name ?? marketSelected;
-          renderMarketList();
-        };
-      });
     }
 
-    $("marketSearch").addEventListener("input", renderMarketList);
-    $("marketFilter").addEventListener("change", renderMarketList);
-
-    function tradeMarket(kind){
-      if(!requirePlayer()) return;
-      const st = states.get(playerId);
-      if(!st) return;
-      if(!marketSelected){ log("Pick an item."); return; }
-      const qty = 10;
-      const price = Market.prices.get(marketSelected) ?? 10;
-      if(kind==="buy"){
-        const cost = price * qty;
-        if(st.gold < cost){ log("⚠️ Gold too low."); return; }
-        st.gold -= cost;
-        st.stock.set(marketSelected, (st.stock.get(marketSelected)||0) + qty);
-        log(`🛒 Bought ${qty} (${marketSelected}) for ${cost}`);
-      }else{
-        const have = st.stock.get(marketSelected) || 0;
-        if(have < qty){ log("⚠️ Not enough stock."); return; }
-        st.stock.set(marketSelected, have - qty);
-        const gain = Math.round(price * qty * 0.92);
-        st.gold += gain;
-        log(`💰 Sold ${qty} (${marketSelected}) for ${gain}`);
-      }
-      updateHUD();
-      renderMarketList();
+    function gameOver(win, reason){
+      running = false;
+      setStatus(win ? "فوز" : "خسارة");
+      log(reason);
+      alert(reason);
     }
 
-    $("buyBtn").onclick = ()=>tradeMarket("buy");
-    $("sellBtn").onclick = ()=>tradeMarket("sell");
-
-    /* =========================
-       Diplomacy UI
-       ========================= */
-    $("btnDiplomacy").onclick = ()=>{
-      $("dipBack").style.display = "flex";
-      refreshDiplomacyUI();
-    };
-    $("dipClose").onclick = ()=> $("dipBack").style.display = "none";
-
-    /* =========================
-       Help UI
-       ========================= */
-    $("btnHelp").onclick = ()=> $("helpBack").style.display = "flex";
-    $("helpClose").onclick = ()=> $("helpBack").style.display = "none";
-
-    /* =========================
-       Restart
-       ========================= */
+    /* ========= Restart ========= */
     $("btnRestart").onclick = ()=>{
-      if(!confirm("Restart?")) return;
-      clearGame();
-      createAIs(9);
-      assignAIProvinces();
-      for(const [id] of states.entries()) initRelationsFor(id);
-      buildProvinces(); // regenerate
-      refreshIcons();
-      refreshProvincesStyle();
+      if(!confirm("إعادة تشغيل؟")) return;
+      location.reload();
     };
 
-    /* =========================
-       Escape HTML helper
-       ========================= */
-    function escapeHtml(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+    /* ========= Help modal ========= */
+    $("btnHelp").onclick = ()=> $("helpBack").style.display="flex";
+    $("helpClose").onclick = ()=> $("helpBack").style.display="none";
 
-    /* =========================
-       Main loop
-       ========================= */
+    /* ========= Dynasty modal open button already wired ========= */
+
+    /* ========= Loop ========= */
     let running = true;
+    let econTick = 0;
+    let aiTickCounter = 0;
 
     function loop(){
       if(!running) return;
 
-      tick++;
-
-      // clock
-      if(gameStartAt) ui.clock.textContent = fmtClock(now() - gameStartAt);
+      if(gameStartAt) ui.clock.textContent = fmtClock(now()-gameStartAt);
       else ui.clock.textContent = "00:00:00";
 
-      // builds
       processBuildQueues();
-
-      // sieges
       processSieges();
 
-      // traders
-      Traders.step();
-      Traders.render();
-
-      // economy every CFG.econEvery ticks
       econTick++;
       if(econTick >= CFG.econEvery){
         econTick = 0;
-        processEconomyAndUpkeep();
+        processEconomy();
         processRevolts();
       }
 
-      // AI
-      aiTick++;
-      if(aiTick >= CFG.aiEvery){
-        aiTick = 0;
+      aiTickCounter++;
+      if(aiTickCounter >= CFG.aiEvery){
+        aiTickCounter = 0;
         aiStep();
       }
 
-      // Update visuals / UI
       refreshProvincesStyle();
-      refreshIcons();
+      refreshSelectionUI();
       updateHUD();
       applyHints();
       checkLoseWin();
@@ -2535,63 +1981,23 @@
       setTimeout(loop, CFG.tickMs);
     }
 
-    /* =========================
-       Zoom-dependent label refresh
-       ========================= */
-    let lastZoomK = 1;
-    zoom.on("zoom.labels", ()=>{
-      const k = d3.zoomTransform(svg.node()).k;
-      if(Math.abs(k - lastZoomK) > 0.25){
-        lastZoomK = k;
-        refreshCityLabels();
-      }
-    });
-
-    /* =========================
-       Load Natural Earth TopoJSON (rivers + lakes + countries + admin0)
-       from gist raw:
-       https://gist.githubusercontent.com/animateddata/.../ne.json
-       ========================= */
+    /* ========= Init ========= */
     async function init(){
-      applyLanguage();
       Market.init();
 
-      // size
       svg.attr("width", W()).attr("height", H());
 
-      // load topojson
+      // Natural Earth topojson bundle (land + rivers + lakes)
       const neUrl = "https://gist.githubusercontent.com/animateddata/0949801eba0d51c80f22490db665f8c3/raw/840d6a5e07839485824c40c81c0ce4447b49ed0f/ne.json";
       const topo = await fetch(neUrl).then(r=>r.json());
 
-      // objects are named like in the gist: admin0 countries, rivers, lakes
-      // land will be derived from countries (better outline)
       const countries = topojson.feature(topo, topo.objects.ne_50m_admin_0_countries);
-      world.countries = countries;
       world.land = topojson.merge(topo, topo.objects.ne_50m_admin_0_countries.geometries);
-
       world.rivers = topojson.feature(topo, topo.objects.ne_10m_rivers_lake_centerlines);
       world.lakes  = topojson.feature(topo, topo.objects.ne_10m_lakes);
 
-      // initial map draw
       fit();
-
-      // create provinces + AIs
       buildProvinces();
-      clearGame();
-      createAIs(9);
-      assignAIProvinces();
-      for(const [id] of states.entries()) initRelationsFor(id);
-
-      refreshProvincesStyle();
-      refreshIcons();
-      updateHUD();
-      refreshDiplomacyUI();
-
-      // resize
-      window.addEventListener("resize", ()=>{
-        svg.attr("width", W()).attr("height", H());
-        fit();
-      });
 
       // ocean breathing
       let tt = 0;
@@ -2603,16 +2009,22 @@
         d3.select("#o2").attr("stop-color", `rgba(30,44,95,${b})`);
       });
 
-      setStatus(t("startHint"));
-      log("Ready.");
+      window.addEventListener("resize", ()=>{
+        svg.attr("width", W()).attr("height", H());
+        fit();
+        // regenerate provinces to keep shapes consistent with new size (optional heavy)
+        buildProvinces();
+      });
+
+      setStatus("اضغط على الخريطة لاختيار إقليم بداية (حر)");
+      log("جاهز.");
       loop();
     }
 
     init().catch(err=>{
       console.error(err);
-      alert("If map fails to load, open via Live Server / local HTTP server (not file://).");
+      alert("إذا ما اشتغل التحميل، افتحها عبر GitHub Pages أو سيرفر محلي (Live Server).");
     });
-
   </script>
 </body>
 </html>
