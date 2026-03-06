@@ -1,1 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>World Map Demo (Smooth Zoom + Crisp Borders)</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header>
+    <div class="pill">World Map Demo — Smooth Zoom + Crisp Borders</div>
+    <div class="right">
+      <button id="resetBtn">إعادة ضبط</button>
+      <div class="pill">Zoom: <code id="zv">1.00</code></div>
+    </div>
+  </header>
 
+  <div id="stage">
+    <svg id="svg" viewBox="0 0 1200 600" aria-label="World Map">
+      <g id="camera">
+        <path id="grat" class="graticule"></path>
+        <g id="layer"></g>
+      </g>
+    </svg>
+
+    <div id="hud">
+      <b>المختار:</b> <code id="picked">—</code>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
