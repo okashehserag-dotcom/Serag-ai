@@ -1,1 +1,222 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Map Demo (Smooth Zoom + Crisp Borders)</title>
+<style>
+  html,body{height:100%;margin:0;background:#0b1220;color:#e8eefc;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  header{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+  button{background:rgba(255,255,255,.08);color:#e8eefc;border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:8px 10px;cursor:pointer}
+  button:hover{background:rgba(255,255,255,.12)}
+  .pill{font-size:12px;opacity:.95;padding:6px 10px;border:1px solid rgba(255,255,255,.14);border-radius:999px}
+  #stage{position:relative;height:calc(100% - 54px);overflow:hidden}
+  svg{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none}
 
+  .graticule{fill:none;stroke:rgba(255,255,255,.08);stroke-width:1;vector-effect:non-scaling-stroke}
+  .outline{fill:none;stroke:rgba(0,0,0,.35);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round;pointer-events:none}
+  .country{fill:rgba(120,160,220,.22);stroke:rgba(255,255,255,.28);stroke-width:1.2;vector-effect:non-scaling-stroke;
+           stroke-linejoin:round;stroke-linecap:round;cursor:pointer;transition:fill 120ms ease,stroke 120ms ease}
+  .country:hover{fill:rgba(120,160,220,.38);stroke:rgba(255,255,255,.42)}
+  .selected{fill:rgba(255,190,80,.55)!important;stroke:rgba(255,255,255,.70)!important}
+
+  #name{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);
+        border-radius:12px;padding:10px 12px;backdrop-filter:blur(6px);max-width:min(520px,calc(100vw - 24px));}
+  #name b{display:inline-block;min-width:90px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="pill">World Map Demo — Smooth Zoom + Crisp Borders</div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button id="resetBtn">إعادة ضبط</button>
+    <div class="pill">Zoom: <code id="zv">1.00</code></div>
+  </div>
+</header>
+
+<div id="stage">
+  <svg id="svg" viewBox="0 0 1200 600" aria-label="World Map">
+    <g id="camera">
+      <path id="grat" class="graticule"></path>
+      <g id="layer"></g>
+    </g>
+  </svg>
+
+  <div id="name"><b>المختار:</b> <code id="picked">—</code></div>
+</div>
+
+<script>
+/* ===== Projection ===== */
+const W=1200,H=600;
+const project=(lon,lat)=>[(lon+180)/360*W,(90-lat)/180*H];
+
+/* ===== Graticule ===== */
+function makeGraticule(step=30){
+  let d="";
+  for(let lon=-180;lon<=180;lon+=step){
+    const [x0,y0]=project(lon,-90),[x1,y1]=project(lon,90);
+    d+=`M${x0.toFixed(2)} ${y0.toFixed(2)} L${x1.toFixed(2)} ${y1.toFixed(2)} `;
+  }
+  for(let lat=-90;lat<=90;lat+=step){
+    const [x0,y0]=project(-180,lat),[x1,y1]=project(180,lat);
+    d+=`M${x0.toFixed(2)} ${y0.toFixed(2)} L${x1.toFixed(2)} ${y1.toFixed(2)} `;
+  }
+  return d;
+}
+document.getElementById("grat").setAttribute("d", makeGraticule(30));
+
+/* ===== Smooth camera ===== */
+const svg=document.getElementById("svg");
+const cameraG=document.getElementById("camera");
+const zv=document.getElementById("zv");
+let cam={x:0,y:0,k:1}, tgt={x:0,y:0,k:1}, raf=0;
+
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function renderNow(){
+  cameraG.setAttribute("transform",`translate(${cam.x},${cam.y}) scale(${cam.k})`);
+  zv.textContent=cam.k.toFixed(2);
+}
+function tick(){
+  raf=0;
+  const ease=0.18;
+  cam.x=lerp(cam.x,tgt.x,ease);
+  cam.y=lerp(cam.y,tgt.y,ease);
+  cam.k=lerp(cam.k,tgt.k,ease);
+  renderNow();
+  if(Math.abs(cam.x-tgt.x)>0.05||Math.abs(cam.y-tgt.y)>0.05||Math.abs(cam.k-tgt.k)>0.0005) requestRender();
+}
+function requestRender(){ if(!raf) raf=requestAnimationFrame(tick); }
+renderNow();
+
+/* ===== Drag pan ===== */
+let dragging=false, moved=false, lastX=0,lastY=0;
+svg.addEventListener("pointerdown",(e)=>{
+  dragging=true; moved=false; lastX=e.clientX; lastY=e.clientY;
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove",(e)=>{
+  if(!dragging) return;
+  const dx=e.clientX-lastX, dy=e.clientY-lastY;
+  lastX=e.clientX; lastY=e.clientY;
+  if(Math.abs(dx)+Math.abs(dy)>2) moved=true;
+  tgt.x+=dx; tgt.y+=dy; requestRender();
+});
+svg.addEventListener("pointerup",()=>{ dragging=false; setTimeout(()=>moved=false,0); });
+svg.addEventListener("pointercancel",()=>dragging=false);
+
+/* ===== Wheel zoom (correct around cursor) ===== */
+svg.addEventListener("wheel",(ev)=>{
+  ev.preventDefault();
+  const pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+
+  const svgInv=svg.getScreenCTM().inverse();
+  const pSvg=pt.matrixTransform(svgInv);
+
+  const camInv=cameraG.getScreenCTM().inverse();
+  const pWorld=pt.matrixTransform(camInv);
+
+  const z=Math.exp(-ev.deltaY*0.0015);
+  const newK=clamp(tgt.k*z,0.6,20);
+
+  tgt.k=newK;
+  tgt.x=pSvg.x - pWorld.x*newK;
+  tgt.y=pSvg.y - pWorld.y*newK;
+  requestRender();
+},{passive:false});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  tgt={x:0,y:0,k:1}; cam={...tgt}; renderNow();
+});
+
+/* ===== TopoJSON decode (minimal) ===== */
+function decodeArcs(topology){
+  const {transform,arcs}=topology;
+  const scale=transform?transform.scale:[1,1];
+  const translate=transform?transform.translate:[0,0];
+  return arcs.map(arc=>{
+    let x=0,y=0; const pts=[];
+    for(const [dx,dy] of arc){
+      x+=dx; y+=dy;
+      pts.push([x*scale[0]+translate[0], y*scale[1]+translate[1]]);
+    }
+    return pts;
+  });
+}
+function arcPts(decoded,i){
+  if(i>=0) return decoded[i];
+  return decoded[~i].slice().reverse();
+}
+function stitch(decoded,ringArcs){
+  const ring=[];
+  for(let i=0;i<ringArcs.length;i++){
+    const seg=arcPts(decoded,ringArcs[i]);
+    ring.push(...(i?seg.slice(1):seg));
+  }
+  return ring;
+}
+function geomToPath(decoded,g){
+  const ringsToD=(rings)=>rings.map(r=>{
+    let d=""; for(let i=0;i<r.length;i++){
+      const [lon,lat]=r[i]; const [x,y]=project(lon,lat);
+      d+=(i?"L":"M")+x.toFixed(2)+" "+y.toFixed(2)+" ";
+    } return d+"Z";
+  }).join(" ");
+
+  if(g.type==="Polygon") return ringsToD(g.arcs.map(r=>stitch(decoded,r)));
+  if(g.type==="MultiPolygon") return g.arcs.map(poly=>ringsToD(poly.map(r=>stitch(decoded,r)))).join(" ");
+  return "";
+}
+
+/* ===== Draw countries ===== */
+const layer=document.getElementById("layer");
+const picked=document.getElementById("picked");
+let selected=null;
+
+async function main(){
+  const url="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+  const topo=await (await fetch(url,{cache:"force-cache"})).json();
+  const obj=topo.objects.countries;
+  const decoded=decodeArcs(topo);
+
+  for(const g of obj.geometries){
+    const d=geomToPath(decoded,g);
+    if(!d) continue;
+
+    const outline=document.createElementNS("http://www.w3.org/2000/svg","path");
+    outline.setAttribute("class","outline");
+    outline.setAttribute("fill-rule","evenodd");
+    outline.setAttribute("d",d);
+    layer.appendChild(outline);
+
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("class","country");
+    p.setAttribute("fill-rule","evenodd");
+    p.setAttribute("d",d);
+
+    const name=(g.properties&&(g.properties.name||g.properties.ADMIN||g.properties.NAME))||"Unknown";
+    p.dataset.name=name;
+
+    p.addEventListener("click",(ev)=>{
+      if(moved) return;
+      ev.stopPropagation();
+      if(selected) selected.classList.remove("selected");
+      selected=p; p.classList.add("selected");
+      picked.textContent=name;
+    });
+
+    layer.appendChild(p);
+  }
+}
+svg.addEventListener("click",()=>{
+  if(moved) return;
+  if(selected) selected.classList.remove("selected");
+  selected=null; picked.textContent="—";
+});
+
+main().catch(e=>{ picked.textContent="خطأ تحميل الخريطة"; console.error(e); });
+</script>
+</body>
+</html>
